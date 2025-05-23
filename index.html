@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>One-Stop Trade</title>
+  <style>
+    html, body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f2f5;
+      height: 100%;
+      overflow: hidden;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+    }
+    #nav-bar {
+      display: none;
+      background: #444;
+      padding: 0.5rem;
+      justify-content: center;
+    }
+    #nav-bar a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+    }
+    #search-bar {
+      display: none;
+      justify-content: center;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
+    #search-bar input {
+      padding: 0.5rem;
+      width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    #search-bar button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #product-feed-wrapper {
+      position: relative;
+      height: calc(100vh - 208px);
+      overflow-y: auto;
+      margin: 0 auto;
+      margin-top: 0.5rem;
+      max-width: 1000px;
+      background: #fefefe;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      display: none;
+    }
+    #product-feed {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+    .product-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+    .product-card .info {
+      padding: 1.5rem;
+    }
+    .product-card .posted-by {
+      font-size: 1rem;
+      color: #555;
+      margin-top: 0.5rem;
+    }
+    #login-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 4rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    #login-section input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    #login-section button {
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #welcome-message {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛒 One-Stop Trade</h1>
+    <nav>
+      <a href="#login" id="login-link">Login</a>
+      <a href="#profile" id="profile-link" style="display:none;">Profile</a>
+      <a href="#" id="logout-link" style="display:none;">Logout</a>
+    </nav>
+  </header>
+
+  <div id="nav-bar">
+    <a href="#home" id="home-link">Home</a>
+    <a href="#list">Product Listings</a>
+    <a href="#messages">Messages</a>
+    <a href="#payments">Payments</a>
+  </div>
+
+  <div id="search-bar">
+    <input type="text" id="search" placeholder="Search products...">
+    <button id="search-btn">Search</button>
+  </div>
+
+  <div id="login-section">
+    <input type="text" id="username-input" placeholder="Enter your username" />
+    <button id="login-btn">Login</button>
+  </div>
+
+  <div id="welcome-message" style="display:none;"></div>
+
+  <div id="product-feed-wrapper">
+    <div id="product-feed"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const products = [
+        { name: "Wireless Earbuds", price: "MWK 29,000", image: "https://via.placeholder.com/250x200?text=Earbuds", user: "Alice Johnson" },
+        { name: "Gaming Mouse", price: "MWK 49,000", image: "https://via.placeholder.com/250x200?text=Mouse", user: "Bob Smith" },
+        { name: "Smart Watch", price: "MWK 99,000", image: "https://via.placeholder.com/250x200?text=Watch", user: "Charlie Brown" },
+        { name: "Mechanical Keyboard", price: "MWK 79,000", image: "https://via.placeholder.com/250x200?text=Keyboard", user: "Dana White" },
+        { name: "HD Monitor", price: "MWK 149,000", image: "https://via.placeholder.com/250x200?text=Monitor", user: "Ethan Hunt" },
+      ];
+
+      const feedWrapper = document.getElementById("product-feed-wrapper");
+      const feed = document.getElementById("product-feed");
+      const searchInput = document.getElementById("search");
+      const searchBtn = document.getElementById("search-btn");
+      const loginSection = document.getElementById("login-section");
+      const loginBtn = document.getElementById("login-btn");
+      const usernameInput = document.getElementById("username-input");
+      const welcomeMessage = document.getElementById("welcome-message");
+      const loginLink = document.getElementById("login-link");
+      const profileLink = document.getElementById("profile-link");
+      const logoutLink = document.getElementById("logout-link");
+      const searchBar = document.getElementById("search-bar");
+      const navBar = document.getElementById("nav-bar");
+
+      let currentUser = localStorage.getItem("oneStopTradeUser");
+
+      function createProductCard(product) {
+        const card = document.createElement("div");
+        card.classList.add("product-card");
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <div class="info">
+            <h3>${product.name}</h3>
+            <p>${product.price}</p>
+            <p class="posted-by">Listed by ${product.user}</p>
+          </div>
+        `;
+        return card;
+      }
+
+      function displayProducts(filter = "") {
+        feed.innerHTML = "";
+        const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
+        filtered.forEach(p => feed.appendChild(createProductCard(p)));
+        filtered.forEach(p => feed.appendChild(createProductCard(p)));
+      }
+
+      function setupInfiniteScroll() {
+        feedWrapper.scrollTop = 0;
+        feedWrapper.addEventListener("scroll", () => {
+          if (feedWrapper.scrollTop >= feed.scrollHeight / 2) {
+            feedWrapper.scrollTop -= feed.scrollHeight / 2;
+          } else if (feedWrapper.scrollTop <= 0) {
+            feedWrapper.scrollTop += feed.scrollHeight / 2;
+          }
+        });
+      }
+
+      function updateUI() {
+        if (currentUser) {
+          loginSection.style.display = "none";
+          welcomeMessage.style.display = "block";
+          welcomeMessage.textContent = `Welcome, ${currentUser}! Scroll products below.`;
+          setTimeout(() => {
+            welcomeMessage.style.display = "none";
+          }, 3000);
+          feedWrapper.style.display = "block";
+          searchBar.style.display = "flex";
+          navBar.style.display = "flex";
+          loginLink.style.display = "none";
+          profileLink.style.display = "inline";
+          logoutLink.style.display = "inline";
+          displayProducts();
+          setupInfiniteScroll();
+        } else {
+          loginSection.style.display = "flex";
+          welcomeMessage.style.display = "none";
+          feedWrapper.style.display = "none";
+          searchBar.style.display = "none";
+          navBar.style.display = "none";
+          loginLink.style.display = "inline";
+          profileLink.style.display = "none";
+          logoutLink.style.display = "none";
+        }
+      }
+
+      loginBtn.addEventListener("click", () => {
+        const username = usernameInput.value.trim();
+        if (!username) {
+          alert("Please enter a username to login.");
+          return;
+        }
+        currentUser = username;
+        localStorage.setItem("oneStopTradeUser", currentUser);
+        usernameInput.value = "";
+        updateUI();
+      });
+
+      logoutLink.addEventListener("click", e => {
+        e.preventDefault();
+        localStorage.removeItem("oneStopTradeUser");
+        currentUser = null;
+        updateUI();
+      });
+
+      searchBtn.addEventListener("click", () => {
+        displayProducts(searchInput.value);
+        feedWrapper.scrollTop = 0;
+      });
+
+      updateUI();
+    });
+  </script>
+</body>
+</html>
