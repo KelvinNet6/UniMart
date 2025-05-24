@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trader Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+    }
+    .hidden {
+      display: none;
+    }
+    .profile-header {
+      background-color: #333;
+      color: white;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 2rem;
+    }
+    .trader-info {
+      line-height: 1.6;
+    }
+    .trader-info h2 {
+      margin: 0;
+    }
+    .product-listings {
+      padding: 2rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-card .info {
+      padding: 1rem;
+    }
+    .product-card h4 {
+      margin: 0 0 0.5rem;
+    }
+    .edit-btn {
+      background-color: #f90;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+    .edit-profile-page {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .edit-profile-page input, .edit-profile-page textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 0.75rem 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .edit-profile-page button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Profile Page -->
+<div id="profile-page">
+  <div class="profile-header">
+    <div style="display: flex; align-items: center;">
+      <img id="profile-image" src="https://via.placeholder.com/120" alt="Trader Profile Picture" />
+      <div class="trader-info">
+        <h2 id="display-name">John Doe</h2>
+        <p><strong>Location:</strong> <span id="display-location">Lilongwe, Malawi</span></p>
+        <p><strong>Bio:</strong> <span id="display-bio">Experienced electronics trader specializing in mobile gadgets and accessories.</span></p>
+      </div>
+    </div>
+    <div id="profile-action-button"></div>
+  </div>
+
+  <div class="product-listings">
+    <h3>Listed Products</h3>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="https://wholesale.alegre.net.au/assets/full/S-IPHX-ALL-NIB.jpg?20201124095923" alt="Product" />
+        <div class="info">
+          <h4>Smartphone</h4>
+          <p>MWK 120,000</p>
+        </div>
+      </div>
+      <div class="product-card">
+        <img src="https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MQTP3?wid=1144&hei=1144&fmt=jpeg&qlt=90&.v=1687660671182" alt="Product" />
+        <div class="info">
+          <h4>Bluetooth Headphones</h4>
+          <p>MWK 45,000</p>
+        </div>
+      </div>
+      <div class="product-card">
+        <img src="https://9to5mac.com/wp-content/uploads/sites/6/2021/06/iPad-Pro-2021-Review.jpg?quality=82&strip=all" alt="Product" />
+        <div class="info">
+          <h4>Tablet</h4>
+          <p>MWK 95,000</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Page -->
+<div id="edit-page" class="edit-profile-page hidden">
+  <h2>Edit Profile</h2>
+  <label for="name">Name:</label>
+  <input type="text" id="edit-name" placeholder="Enter your name" />
+  <label for="location">Location:</label>
+  <input type="text" id="edit-location" placeholder="Enter your location" />
+  <label for="bio">Bio:</label>
+  <textarea id="edit-bio" rows="4" placeholder="Enter your bio"></textarea>
+  <label for="profile-pic">Profile Picture:</label>
+  <input type="file" id="profile-pic" accept="image/*" onchange="previewImage(event)" />
+  <button onclick="saveChanges()">Save Changes</button>
+</div>
+
+<script>
+  // Simulated user context
+  const currentUserId = 'user123';       // The logged-in user
+  const profileOwnerId = 'user123';      // The profile being viewed
+
+  function goToEdit() {
+    document.getElementById('profile-page').classList.add('hidden');
+    document.getElementById('edit-page').classList.remove('hidden');
+
+    document.getElementById('edit-name').value = document.getElementById('display-name').textContent;
+    document.getElementById('edit-location').value = document.getElementById('display-location').textContent;
+    document.getElementById('edit-bio').value = document.getElementById('display-bio').textContent;
+  }
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imageData = e.target.result;
+        localStorage.setItem('profileImage', imageData);
+        document.getElementById('profile-image').src = imageData;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function saveChanges() {
+    const name = document.getElementById('edit-name').value;
+    const location = document.getElementById('edit-location').value;
+    const bio = document.getElementById('edit-bio').value;
+
+    document.getElementById('display-name').textContent = name;
+    document.getElementById('display-location').textContent = location;
+    document.getElementById('display-bio').textContent = bio;
+
+    localStorage.setItem('name', name);
+    localStorage.setItem('location', location);
+    localStorage.setItem('bio', bio);
+
+    document.getElementById('edit-page').classList.add('hidden');
+    document.getElementById('profile-page').classList.remove('hidden');
+  }
+
+  window.onload = function() {
+    const name = localStorage.getItem('name');
+    const location = localStorage.getItem('location');
+    const bio = localStorage.getItem('bio');
+    const image = localStorage.getItem('profileImage');
+
+    if (name) document.getElementById('display-name').textContent = name;
+    if (location) document.getElementById('display-location').textContent = location;
+    if (bio) document.getElementById('display-bio').textContent = bio;
+    if (image) document.getElementById('profile-image').src = image;
+
+    const actionDiv = document.getElementById('profile-action-button');
+    if (currentUserId === profileOwnerId) {
+      actionDiv.innerHTML = `<button class="edit-btn" onclick="goToEdit()">Edit Profile</button>`;
+    } else {
+      actionDiv.innerHTML = `<button class="edit-btn" onclick="alert('Messaging feature coming soon!')">Message</button>`;
+    }
+  };
+</script>
+
+</body>
+</html>
