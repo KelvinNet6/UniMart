@@ -3,126 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chat</title>
+  <title>Messages</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f0f2f5;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
     }
-    .chat-header {
-      background: #333;
-      color: white;
+    .messages-container {
+      max-width: 600px;
+      margin: auto;
       padding: 1rem;
-      text-align: center;
-    }
-    .chat-box {
-      flex: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      background: #e5e7eb;
-      display: flex;
-      flex-direction: column;
-    }
-    .message {
-      max-width: 70%;
-      margin: 0.5rem 0;
-      padding: 0.75rem;
-      border-radius: 10px;
-      line-height: 1.4;
-    }
-    .sent {
-      align-self: flex-end;
-      background-color: #d1e7dd;
-    }
-    .received {
-      align-self: flex-start;
-      background-color: #fff;
-    }
-    .chat-input {
-      display: flex;
-      border-top: 1px solid #ccc;
-      padding: 0.75rem;
       background: white;
     }
-    .chat-input input {
-      flex: 1;
-      padding: 0.5rem;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      margin-right: 0.5rem;
-    }
-    .chat-input button {
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 0.5rem 1rem;
+    .message-item {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
       cursor: pointer;
+      transition: background 0.2s;
+    }
+    .message-item:hover {
+      background: #f9f9f9;
+    }
+    .message-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+    }
+    .message-details {
+      flex: 1;
+    }
+    .message-details h4 {
+      margin: 0;
+    }
+    .message-details p {
+      margin: 0.2rem 0 0;
+      color: gray;
     }
   </style>
 </head>
 <body>
 
-<div class="chat-header">
-  <h3 id="chat-partner">Chat</h3>
-</div>
-
-<div id="chat-box" class="chat-box">
-  <!-- Messages will be appended here -->
-</div>
-
-<div class="chat-input">
-  <input id="chat-message" type="text" placeholder="Type a message..." />
-  <button onclick="sendMessage()">Send</button>
+<div class="messages-container">
+  <h2>Messages</h2>
+  <div id="messages-list">
+    <!-- Dynamically inserted messages -->
+  </div>
 </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get('user');
+  // Simulated messages data (replace with API call)
   const messages = [
-    { from: 'me', text: 'Hey there!' },
-    { from: userId, text: 'Hello! Is the phone still available?' }
+    { id: 'user1', name: 'Jane Doe', lastMessage: 'Hey, still selling the tablet?', profilePic: 'https://via.placeholder.com/50' },
+    { id: 'user2', name: 'Mike Smith', lastMessage: 'Thanks for the headphones!', profilePic: 'https://via.placeholder.com/50' }
   ];
 
-  document.getElementById('chat-partner').textContent = `Chat with ${userId}`;
+  const listContainer = document.getElementById('messages-list');
 
-  const chatBox = document.getElementById('chat-box');
+  messages.forEach(msg => {
+    const item = document.createElement('div');
+    item.className = 'message-item';
+    item.onclick = () => window.location.href = `chat.html?user=${msg.id}`;
+    item.innerHTML = `
+      <img src="${msg.profilePic}" alt="Profile">
+      <div class="message-details">
+        <h4>${msg.name}</h4>
+        <p>${msg.lastMessage}</p>
+      </div>
+    `;
+    listContainer.appendChild(item);
+  });
 
-  function renderMessages() {
-    chatBox.innerHTML = '';
-    messages.forEach(msg => {
-      const div = document.createElement('div');
-      div.className = `message ${msg.from === 'me' ? 'sent' : 'received'}`;
-      div.textContent = msg.text;
-      chatBox.appendChild(div);
-    });
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function sendMessage() {
-    const input = document.getElementById('chat-message');
-    const text = input.value.trim();
-    if (!text) return;
-
-    messages.push({ from: 'me', text });
-    input.value = '';
-    renderMessages();
-
-    // Placeholder for sending to backend
-    // socket.emit('send-message', { to: userId, text });
-  }
-
-  renderMessages();
-
-  // Later: listen for incoming messages
-  // socket.on('receive-message', (msg) => {
-  //   messages.push(msg);
-  //   renderMessages();
-  // });
+  // Later: Replace `messages` with fetched or live WebSocket data
 </script>
 
 </body>
