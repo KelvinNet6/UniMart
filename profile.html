@@ -124,8 +124,8 @@
       <img id="profile-image" src="https://via.placeholder.com/120" alt="Trader Profile Picture" />
       <div class="trader-info">
         <h2 id="display-name">John Doe</h2>
-        <p><strong>Location:</strong> <span id="display-location">Lilongwe, Malawi</span></p>
-        <p><strong>Bio:</strong> <span id="display-bio">Experienced electronics trader specializing in mobile gadgets and accessories.</span></p>
+        <p><strong></strong> <span id="display-location">Lilongwe, Malawi</span></p>
+        <p><strong></strong> <span id="display-bio">Experienced electronics trader specializing in mobile gadgets and accessories.</span></p>
       </div>
     </div>
     <div id="profile-action-button"></div>
@@ -244,7 +244,7 @@
       `;
     } else {
       actionDiv.innerHTML = `
-        <a href="/messages?to=${profileOwnerId}">
+        <a href="messages.html?to=${profileOwnerId}">
           <button class="edit-btn">Send Message</button>
         </a>
       `;
