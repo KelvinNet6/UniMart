@@ -91,6 +91,28 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    /* Message icon styles */
+    .message-icon-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .message-icon {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: white;
+    }
+    .message-icon-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      border-radius: 50%;
+    }
   </style>
 </head>
 <body>
@@ -154,7 +176,8 @@
 <script>
   // Simulated user context
   const currentUserId = 'user123';       // The logged-in user
-  const profileOwnerId = 'user123';      // The profile being viewed
+  const profileOwnerId = 'user456';      // The profile being viewed
+  const hasUnreadMessages = true;        // Simulated unread message flag
 
   function goToEdit() {
     document.getElementById('profile-page').classList.add('hidden');
@@ -210,7 +233,14 @@
     if (currentUserId === profileOwnerId) {
       actionDiv.innerHTML = `<button class="edit-btn" onclick="goToEdit()">Edit Profile</button>`;
     } else {
-      actionDiv.innerHTML = `<button class="edit-btn" onclick="alert('Messaging feature coming soon!')">Message</button>`;
+      actionDiv.innerHTML = `
+        <div class="message-icon-wrapper">
+          <a href="/messages">
+            <button class="message-icon" title="Go to messages">💬</button>
+          </a>
+          ${hasUnreadMessages ? '<span class="message-icon-badge"></span>' : ''}
+        </div>
+      `;
     }
   };
 </script>
