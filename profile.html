@@ -91,25 +91,25 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
-    /* Message icon styles */
     .message-icon-wrapper {
       position: relative;
       display: inline-block;
     }
     .message-icon {
-      background: none;
+      background-color: #555;
       border: none;
-      font-size: 28px;
-      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
       color: white;
+      cursor: pointer;
+      font-size: 1.2rem;
     }
     .message-icon-badge {
       position: absolute;
-      top: 0;
-      right: 0;
-      width: 10px;
-      height: 10px;
+      top: -6px;
+      right: -6px;
+      width: 12px;
+      height: 12px;
       background-color: red;
       border-radius: 50%;
     }
@@ -174,9 +174,8 @@
 </div>
 
 <script>
-  // Simulated user context
   const currentUserId = 'user123';       // The logged-in user
-  const profileOwnerId = 'user456';      // The profile being viewed
+  const profileOwnerId = 'user123';      // The profile being viewed
   const hasUnreadMessages = true;        // Simulated unread message flag
 
   function goToEdit() {
@@ -230,16 +229,24 @@
     if (image) document.getElementById('profile-image').src = image;
 
     const actionDiv = document.getElementById('profile-action-button');
+
     if (currentUserId === profileOwnerId) {
-      actionDiv.innerHTML = `<button class="edit-btn" onclick="goToEdit()">Edit Profile</button>`;
+      actionDiv.innerHTML = `
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button class="edit-btn" onclick="goToEdit()">Edit Profile</button>
+          <div class="message-icon-wrapper">
+            <a href="/messages">
+              <button class="message-icon" title="Go to inbox">💬</button>
+            </a>
+            ${hasUnreadMessages ? '<span class="message-icon-badge"></span>' : ''}
+          </div>
+        </div>
+      `;
     } else {
       actionDiv.innerHTML = `
-        <div class="message-icon-wrapper">
-          <a href="/messages">
-            <button class="message-icon" title="Go to messages">💬</button>
-          </a>
-          ${hasUnreadMessages ? '<span class="message-icon-badge"></span>' : ''}
-        </div>
+        <a href="/messages?to=${profileOwnerId}">
+          <button class="edit-btn">Send Message</button>
+        </a>
       `;
     }
   };
