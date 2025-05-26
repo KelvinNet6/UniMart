@@ -197,19 +197,21 @@
 
       let currentUser = localStorage.getItem("oneStopTradeUser");
 
-      function createProductCard(product) {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-        card.innerHTML = `
-          <img src="${product.image}" alt="${product.name}" />
-          <div class="info">
-            <h3>${product.name}</h3>
-            <p>${product.price}</p>
-            <p class="posted-by">Listed by ${product.user}</p>
-          </div>
-        `;
-        return card;
-      }
+     function createProductCard(product) {
+  const card = document.createElement("div");
+  card.classList.add("product-card");
+  card.innerHTML = `
+    <img src="${product.image}" alt="${product.name}" />
+    <div class="info">
+      <h3>${product.name}</h3>
+      <p>${product.price}</p>
+      <p class="posted-by">Listed by ${product.user}</p>
+      <button onclick="location.href='profile.html'" style="margin-top:10px; padding: 0.5rem 1rem; background:#333; color:white; border:none; border-radius:5px; cursor:pointer;">Visit Shop</button>
+    </div>
+  `;
+  return card;
+}
+
 
       function displayProducts(filter = "") {
         feed.innerHTML = "";
