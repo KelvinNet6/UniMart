@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+    }
+
+    header {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+    }
+
+    #nav-bar {
+      display: flex;
+      background: #444;
+      padding: 0.5rem;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    #nav-bar a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+    }
+
+    .checkout-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .product-preview {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .product-preview img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .form-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-section label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    .form-section input, 
+    .form-section select {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .checkout-button {
+      padding: 0.75rem 2rem;
+      font-size: 1.2rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .checkout-button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🛒 One-Stop Trade</h1>
+  <nav>
+    <a href="#profile" id="profile-link" style="display:none;">Profile</a>
+    <a href="#" id="logout-link" style="display:none;">Logout</a>
+  </nav>
+</header>
+
+<div id="nav-bar">
+  <a href="#home" id="home-link">Home</a>
+  <a href="#list">Product Listings</a>
+  <a href="#messages">Messages</a>
+  <a href="#payments">Payments</a>
+</div>
+
+<div class="checkout-container">
+  <h2>Checkout</h2>
+
+  <div class="product-preview">
+    <img src="https://via.placeholder.com/200" alt="Product Image">
+    <div class="product-info">
+      <h3>Sample Product Name</h3>
+      <p>Category: Electronics</p>
+      <p>Price: $129.99</p>
+    </div>
+  </div>
+
+  <form onsubmit="event.preventDefault(); alert('Payment processed successfully!');">
+    <div class="form-section">
+      <label for="full-name">Full Name</label>
+      <input type="text" id="full-name" name="full-name" required>
+      
+      <label for="address">Shipping Address</label>
+      <input type="text" id="address" name="address" required>
+      
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+
+    <div class="form-section">
+      <label for="payment-method">Payment Method</label>
+      <select id="payment-method" name="payment-method" required>
+        <option value="card">Credit/Debit Card</option>
+        <option value="paypal">PayPal</option>
+        <option value="bank">Bank Transfer</option>
+        <option value="cod">Cash on Delivery</option>
+      </select>
+    </div>
+
+    <button type="submit" class="checkout-button">Pay Now</button>
+  </form>
+</div>
+
+</body>
+</html>
