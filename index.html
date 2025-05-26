@@ -5,127 +5,232 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>One-Stop Trade</title>
   <style>
-    html, body {
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+    }
+    body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #f0f2f5;
-      height: 100%;
-      overflow: hidden;
+      margin: 0; padding: 0;
+      background: #f5f5f5;
+      color: #333;
     }
     header {
-      background: #333;
+      background: #222;
       color: white;
-      padding: 1rem;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
     }
     nav a {
       color: white;
       margin-left: 1rem;
       text-decoration: none;
+      font-weight: bold;
     }
     #nav-bar {
-      display: none;
       background: #444;
-      padding: 0.5rem;
-      justify-content: center;
+      padding: 0.5rem 2rem;
     }
     #nav-bar a {
       color: white;
-      margin: 0 1rem;
       text-decoration: none;
+      font-weight: 600;
     }
     #search-bar {
-      display: none;
+      display: flex;
       justify-content: center;
-      padding: 0.5rem;
-      gap: 0.5rem;
+      margin: 1rem 0;
     }
-    #search-bar input {
+    #search-bar input[type="text"] {
       padding: 0.5rem;
-      width: 300px;
-      border-radius: 5px;
+      font-size: 1rem;
+      width: 250px;
       border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+      outline: none;
     }
     #search-bar button {
       padding: 0.5rem 1rem;
-      border: none;
-      background-color: #333;
+      border: 1px solid #333;
+      background: #333;
       color: white;
+      cursor: pointer;
+      border-radius: 0 5px 5px 0;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    #search-bar button:hover {
+      background: #555;
+    }
+
+    /* Login/Register Sections */
+    #login-section, #register-section {
+      max-width: 320px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #login-section h2, #register-section h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    #login-section input, #register-section input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+    #login-section button, #register-section button {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 0.75rem;
+      font-weight: bold;
       border-radius: 5px;
       cursor: pointer;
+      transition: background 0.3s;
     }
+    #login-section button:hover, #register-section button:hover {
+      background: #555;
+    }
+    #login-section p, #register-section p {
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    #login-section p a, #register-section p a {
+      cursor: pointer;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    #login-section p a:hover, #register-section p a:hover {
+      text-decoration: underline;
+    }
+
+    /* Google login button with icon */
+    #google-login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid #ccc;
+      color: #444;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    #google-login-btn:hover {
+      background: #eee;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+    }
+    #google-login-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Welcome message */
+    #welcome-message {
+      max-width: 320px;
+      margin: 1rem auto;
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 1rem;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* Product feed */
     #product-feed-wrapper {
-      position: relative;
-      height: calc(100vh - 208px);
-      overflow-y: auto;
-      margin: 0 auto;
-      margin-top: 0.5rem;
-      max-width: 1000px;
-      background: #fefefe;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
       display: none;
     }
     #product-feed {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-      padding: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
     }
     .product-card {
       background: white;
-      border-radius: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
       overflow: hidden;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .product-card img {
       width: 100%;
-      height: 250px;
+      height: 160px;
       object-fit: cover;
     }
     .product-card .info {
-      padding: 1.5rem;
-    }
-    .product-card .posted-by {
-      font-size: 1rem;
-      color: #555;
-      margin-top: 0.5rem;
-    }
-    #login-section {
+      padding: 1rem;
+      flex-grow: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      margin-top: 4rem;
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      justify-content: space-between;
     }
-    #login-section input {
-      padding: 0.5rem;
-      font-size: 1rem;
-      width: 100%;
-      margin-bottom: 1rem;
+    .product-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
     }
-    #login-section button {
-      padding: 0.5rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      background-color: #333;
+    .product-card p {
+      margin: 0.25rem 0;
+      color: #555;
+    }
+    .product-card .posted-by {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 0.5rem;
+    }
+    .product-card button {
+      margin-top: 0.5rem;
+      background: #333;
       color: white;
+      border: none;
+      padding: 0.5rem;
       border-radius: 5px;
       cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
     }
-    #welcome-message {
-      text-align: center;
-      margin-top: 1rem;
-      font-size: 1.2rem;
+    .product-card button:hover {
+      background: #555;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      #search-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      #search-bar input[type="text"] {
+        width: 100%;
+        border-radius: 5px;
+      }
+      #search-bar button {
+        border-radius: 5px;
+      }
+      #product-feed {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
     }
   </style>
 </head>
@@ -138,18 +243,43 @@
     </nav>
   </header>
 
-  <div id="nav-bar">
+  <div id="nav-bar" style="display:none;">
     <a href="index.html" id="home-link">Products Feed</a>
   </div>
 
-  <div id="search-bar">
-    <input type="text" id="search" placeholder="Search products...">
+  <div id="search-bar" style="display:none;">
+    <input type="text" id="search" placeholder="Search products..." />
     <button id="search-btn">Search</button>
   </div>
 
-  <div id="login-section">
-    <input type="text" id="username-input" placeholder="Enter your username" />
+  <!-- Login Form -->
+  <div id="login-section" style="display:flex; flex-direction: column;">
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email" autocomplete="username" />
+    <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
     <button id="login-btn">Login</button>
+
+    <button id="google-login-btn" title="Login with Google" style="margin-top: 10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533.5 544.3">
+        <path fill="#4285F4" d="M533.5 278.4c0-17.5-1.6-34.3-4.7-50.6H272v95.7h146.9c-6.4 34.7-26.1 64.1-55.6 83.7v69.6h89.7c52.5-48.3 82.5-119.5 82.5-198.4z"/>
+        <path fill="#34A853" d="M272 544.3c75.6 0 139.2-24.9 185.6-67.7l-89.7-69.6c-24.9 16.8-56.8 26.7-95.9 26.7-73.7 0-136-49.8-158.2-117.2H22.4v73.8C68.8 487.4 161.4 544.3 272 544.3z"/>
+        <path fill="#FBBC05" d="M113.8 323.9c-5.5-16.3-8.6-33.7-8.6-51.5 0-17.8 3.1-35.2 8.6-51.5v-73.8H22.4C8 217.7 0 247.9 0 278.4c0 30.5 8 60.7 22.4 87.7l91.4-42.2z"/>
+        <path fill="#EA4335" d="M272 109.7c41.1 0 77.8 14.2 106.7 41.9l80.1-80.1C404.8 24.7 342.7 0 272 0 161.4 0 68.8 56.9 22.4 143.8l91.4 73.8C136 159.5 198.3 109.7 272 109.7z"/>
+      </svg>
+      Login with Google
+    </button>
+
+    <p>No account? <a href="#" id="show-register">Register here</a></p>
+    <button id="reset-password-btn" style="margin-top:10px; background:#e07c7c;">Reset Password</button>
+  </div>
+
+  <!-- Registration Form -->
+  <div id="register-section" style="display:none; flex-direction: column;">
+    <h2>Register</h2>
+    <input type="email" id="register-email" placeholder="Email" autocomplete="email" />
+    <input type="password" id="register-password" placeholder="Password" autocomplete="new-password" />
+    <button id="register-btn">Register</button>
+    <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
   </div>
 
   <div id="welcome-message" style="display:none;"></div>
@@ -158,119 +288,185 @@
     <div id="product-feed"></div>
   </div>
 
+  <!-- Load Supabase script first -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const products = [
-        { name: "Wireless Earbuds", price: "MWK 29,000", image: "https://images-na.ssl-images-amazon.com/images/I/71apwE6HGaL._AC_SL1500_.jpg", user: "Alice Johnson" },
-        { name: "Gaming Mouse", price: "MWK 49,000", image: "https://www.bhphotovideo.com/images/images2500x2500/Microsoft_GMF_00010_Wireless_Mobile_Mouse_3500_745203.jpg", user: "Bob Smith" },
-        { name: "Smart Watch", price: "MWK 99,000", image: "https://www.bhphotovideo.com/images/images2500x2500/apple_mj3t2ll_a_watch_sport_smartwatch_42mm_1187199.jpg", user: "Charlie Brown" },
-        { name: "Mechanical Keyboard", price: "MWK 79,000", image: "https://i0.wp.com/specialedtechcenter.com/wp-content/uploads/2023/03/Logitech-Bluetooth-Keyboard-K810-scaled.jpg?fit=2560%2C1707&ssl=1", user: "Dana White" },
-        { name: "HD Monitor", price: "MWK 149,000", image: "https://m.media-amazon.com/images/I/71G-8rSpneL._AC_SL1500_.jpg", user: "Ethan Hunt" },
-      ];
+    // Initialize Supabase client AFTER the script is loaded
+    const supabase = supabase.createClient(
+      "https://honrgtrvzpymssmlbcbn.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
+    );
 
-      const feedWrapper = document.getElementById("product-feed-wrapper");
-      const feed = document.getElementById("product-feed");
-      const searchInput = document.getElementById("search");
-      const searchBtn = document.getElementById("search-btn");
-      const loginSection = document.getElementById("login-section");
-      const loginBtn = document.getElementById("login-btn");
-      const usernameInput = document.getElementById("username-input");
-      const welcomeMessage = document.getElementById("welcome-message");
-      const profileLink = document.getElementById("profile-link");
-      const logoutLink = document.getElementById("logout-link");
-      const searchBar = document.getElementById("search-bar");
-      const navBar = document.getElementById("nav-bar");
+    const feedWrapper = document.getElementById("product-feed-wrapper");
+    const feed = document.getElementById("product-feed");
+    const searchInput = document.getElementById("search");
+    const searchBtn = document.getElementById("search-btn");
+    const loginSection = document.getElementById("login-section");
+    const registerSection = document.getElementById("register-section");
+    const loginBtn = document.getElementById("login-btn");
+    const registerBtn = document.getElementById("register-btn");
+    const logoutLink = document.getElementById("logout-link");
+    const welcomeMessage = document.getElementById("welcome-message");
+    const searchBar = document.getElementById("search-bar");
+    const navBar = document.getElementById("nav-bar");
+    const profileLink = document.getElementById("profile-link");
+    const showRegister = document.getElementById("show-register");
+    const showLogin = document.getElementById("show-login");
+    const googleLoginBtn = document.getElementById("google-login-btn");
+    const resetPasswordBtn = document.getElementById("reset-password-btn");
 
-      let currentUser = localStorage.getItem("oneStopTradeUser");
-
-     function createProductCard(product) {
-  const card = document.createElement("div");
-  card.classList.add("product-card");
-  card.innerHTML = `
-    <img src="${product.image}" alt="${product.name}" />
-    <div class="info">
-      <h3>${product.name}</h3>
-      <p>${product.price}</p>
-      <p class="posted-by">Listed by ${product.user}</p>
-      <button onclick="location.href='profile.html'" style="margin-top:10px; padding: 0.5rem 1rem; background:#333; color:white; border:none; border-radius:5px; cursor:pointer;">Visit Shop</button>
-    </div>
-  `;
-  return card;
-}
-
-
-      function displayProducts(filter = "") {
-  console.log("Displaying products...");  // add this line
-  feed.innerHTML = "";
-  const filtered = products.filter(p =>
-    p.name.toLowerCase().includes(filter.toLowerCase())
-  );
-  filtered.forEach(p => feed.appendChild(createProductCard(p)));
-}
-
-
-      function setupInfiniteScroll() {
-        feedWrapper.scrollTop = 0;
-        feedWrapper.addEventListener("scroll", () => {
-          if (feedWrapper.scrollTop >= feed.scrollHeight / 2) {
-            feedWrapper.scrollTop -= feed.scrollHeight / 2;
-          } else if (feedWrapper.scrollTop <= 0) {
-            feedWrapper.scrollTop += feed.scrollHeight / 2;
-          }
-        });
+    async function fetchProducts() {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) {
+        console.error("Error fetching products:", error);
+        return [];
       }
+      return data || [];
+    }
 
-      function updateUI() {
-        if (currentUser) {
-          loginSection.style.display = "none";
-          welcomeMessage.style.display = "block";
-          welcomeMessage.textContent = `Welcome, ${currentUser}! Scroll products below.`;
-          setTimeout(() => {
-            welcomeMessage.style.display = "none";
-          }, 3000);
-          feedWrapper.style.display = "block";
-          searchBar.style.display = "flex";
-          navBar.style.display = "flex";
-          profileLink.style.display = "inline";
-          logoutLink.style.display = "inline";
-          displayProducts();
-          setupInfiniteScroll();
-        } else {
-          loginSection.style.display = "flex";
-          welcomeMessage.style.display = "none";
-          feedWrapper.style.display = "none";
-          searchBar.style.display = "none";
-          navBar.style.display = "none";
-          loginLink.style.display = "inline";
-          profileLink.style.display = "none";
-          logoutLink.style.display = "none";
-        }
+    function displayProducts(products, filter = "") {
+      feed.innerHTML = "";
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      if(filtered.length === 0){
+        feed.innerHTML = "<p>No products found.</p>";
+        return;
       }
+      filtered.forEach(p => {
+        const card = document.createElement("div");
+        card.classList.add("product-card");
+        card.innerHTML = `
+          <img src="${p.image}" alt="${p.name}" />
+          <div class="info">
+            <h3>${p.name}</h3>
+            <p>Price: ${p.price}</p>
+            <p class="posted-by">Listed by ${p.user}</p>
+            <button onclick="location.href='profile.html'">Visit Shop</button>
+          </div>
+        `;
+        feed.appendChild(card);
+      });
+    }
 
-      loginBtn.addEventListener("click", () => {
-        const username = usernameInput.value.trim();
-        if (!username) {
-          alert("Please enter a username to login.");
+    async function updateUI() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const user = session?.user;
+
+      if (user) {
+        loginSection.style.display = "none";
+        registerSection.style.display = "none";
+        welcomeMessage.style.display = "block";
+        welcomeMessage.textContent = `Welcome, ${user.email}`;
+        feedWrapper.style.display = "block";
+        searchBar.style.display = "flex";
+        navBar.style.display = "flex";
+        profileLink.style.display = "inline";
+        logoutLink.style.display = "inline";
+
+        const products = await fetchProducts();
+        displayProducts(products);
+      } else {
+        loginSection.style.display = "flex";
+        registerSection.style.display = "none";
+        feedWrapper.style.display = "none";
+        welcomeMessage.style.display = "none";
+        searchBar.style.display = "none";
+        navBar.style.display = "none";
+        profileLink.style.display = "none";
+        logoutLink.style.display = "none";
+      }
+    }
+
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert("Login error: " + error.message);
+      } else {
+        updateUI();
+      }
+    });
+
+    registerBtn.addEventListener("click", async () => {
+      const email = document.getElementById("register-email").value.trim();
+      const password = document.getElementById("register-password").value;
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        alert("Registration error: " + error.message);
+      } else {
+        alert("Registered successfully! Logging in...");
+        // Auto-login after registration
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) {
+          alert("Auto-login failed: " + signInError.message);
           return;
         }
-        currentUser = username;
-        localStorage.setItem("oneStopTradeUser", currentUser);
-        usernameInput.value = "";
         updateUI();
-      });
+      }
+    });
 
-      logoutLink.addEventListener("click", e => {
-        e.preventDefault();
-        localStorage.removeItem("oneStopTradeUser");
-        currentUser = null;
-        updateUI();
-      });
+    logoutLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await supabase.auth.signOut();
+      updateUI();
+    });
 
-      searchBtn.addEventListener("click", () => {
-        displayProducts(searchInput.value);
-        feedWrapper.scrollTop = 0;
-      });
+    searchBtn.addEventListener("click", async () => {
+      const products = await fetchProducts();
+      displayProducts(products, searchInput.value);
+      feedWrapper.scrollTop = 0;
+    });
 
+    showRegister.addEventListener("click", (e) => {
+      e.preventDefault();
+      loginSection.style.display = "none";
+      registerSection.style.display = "flex";
+    });
+
+    showLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      registerSection.style.display = "none";
+      loginSection.style.display = "flex";
+    });
+
+    googleLoginBtn.addEventListener("click", async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          // redirectTo can be specified if needed
+          // redirectTo: window.location.origin,
+        },
+      });
+      if (error) alert("Google login error: " + error.message);
+      // Otherwise browser will redirect automatically
+    });
+
+    resetPasswordBtn.addEventListener("click", async () => {
+      const email = prompt("Please enter your email for password reset:");
+      if (!email) return alert("Email is required.");
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) {
+        alert("Reset password error: " + error.message);
+      } else {
+        alert("If that email is registered, a password reset link has been sent.");
+      }
+    });
+
+    // Update UI on page load and auth state change
+    updateUI();
+    supabase.auth.onAuthStateChange((_event, session) => {
       updateUI();
     });
   </script>
