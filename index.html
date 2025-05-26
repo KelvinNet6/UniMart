@@ -176,7 +176,6 @@
       const loginBtn = document.getElementById("login-btn");
       const usernameInput = document.getElementById("username-input");
       const welcomeMessage = document.getElementById("welcome-message");
-      const loginLink = document.getElementById("login-link");
       const profileLink = document.getElementById("profile-link");
       const logoutLink = document.getElementById("logout-link");
       const searchBar = document.getElementById("search-bar");
@@ -201,10 +200,14 @@
 
 
       function displayProducts(filter = "") {
-        feed.innerHTML = "";
-        const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
-        filtered.forEach(p => feed.appendChild(createProductCard(p)));
-      }
+  console.log("Displaying products...");  // add this line
+  feed.innerHTML = "";
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  filtered.forEach(p => feed.appendChild(createProductCard(p)));
+}
+
 
       function setupInfiniteScroll() {
         feedWrapper.scrollTop = 0;
@@ -228,7 +231,6 @@
           feedWrapper.style.display = "block";
           searchBar.style.display = "flex";
           navBar.style.display = "flex";
-          loginLink.style.display = "none";
           profileLink.style.display = "inline";
           logoutLink.style.display = "inline";
           displayProducts();
