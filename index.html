@@ -288,16 +288,15 @@
     <div id="product-feed"></div>
   </div>
 
-  <!-- Load Supabase script first -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
   window.onload = () => {
     const supabase = supabase.createClient(
       "https://honrgtrvzpymssmlbcbn.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
     );
 
+    // (all your code below unchanged, just indent inside this block)
     const feedWrapper = document.getElementById("product-feed-wrapper");
     const feed = document.getElementById("product-feed");
     const searchInput = document.getElementById("search");
@@ -470,6 +469,7 @@
     supabase.auth.onAuthStateChange((_event, session) => {
       updateUI();
     });
-  </script>
+  }
+</script>
 </body>
 </html>
