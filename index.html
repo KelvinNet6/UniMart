@@ -445,8 +445,9 @@
       const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
-          //redirectTo can be specified if needed
-           redirectTo: window.location.origin,
+          
+          redirectTo: "https://kelvinnet6.github.io/One-Stop-Trade/",
+
         },
       });
       if (error) alert("Google login error: " + error.message);
