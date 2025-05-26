@@ -204,7 +204,6 @@
         feed.innerHTML = "";
         const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
         filtered.forEach(p => feed.appendChild(createProductCard(p)));
-        filtered.forEach(p => feed.appendChild(createProductCard(p)));
       }
 
       function setupInfiniteScroll() {
