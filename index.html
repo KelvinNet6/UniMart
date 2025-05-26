@@ -291,7 +291,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   window.onload = () => {
-    const supabase = supabase.createClient(
+    const supabaseClient = supabase.createClient(
       "https://honrgtrvzpymssmlbcbn.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
     );
@@ -445,8 +445,8 @@
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          // redirectTo can be specified if needed
-          // redirectTo: window.location.origin,
+          //redirectTo can be specified if needed
+           redirectTo: window.location.origin,
         },
       });
       if (error) alert("Google login error: " + error.message);
