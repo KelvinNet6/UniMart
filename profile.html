@@ -340,7 +340,7 @@
     const fileExt = file.name.split('.').pop();
     const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
     const { data, error } = await supabase.storage
-      .from('public') // make sure your storage bucket is named 'public' or update accordingly
+      .from('public') 
       .upload(fileName, file, {
         cacheControl: '3600',
         upsert: false
