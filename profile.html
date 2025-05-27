@@ -376,7 +376,7 @@
       // Update profile cover_url in DB
       const { error } = await supabase
         .from('profiles')
-        .update({ cover_url: url })
+        .update({ cover_image_url: url })
         .eq('id', currentUser.id);
 
       if (error) alert('Error saving cover photo: ' + error.message);
@@ -400,7 +400,7 @@
         // Update profile avatar_url in DB
         const { error } = await supabase
           .from('profiles')
-          .update({ avatar_url: url })
+          .update({ profile_image_url: url })
           .eq('id', currentUser.id);
 
         if (error) alert('Error saving profile photo: ' + error.message);
