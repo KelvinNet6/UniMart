@@ -339,11 +339,13 @@
  async function uploadImage(file, folder) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
+  
+  // Upload to Supabase Storage
   const { data, error } = await supabase.storage
-    .from('profile-bucket-1') 
+    .from('profile-bucket-1')
     .upload(fileName, file, {
       cacheControl: '3600',
-      upsert: false
+      upsert: true, // You might want to allow overwrites
     });
 
   if (error) {
@@ -351,11 +353,16 @@
     throw error;
   }
 
-  const { data: publicUrlData } = supabase.storage
-    .from('profile-bucket-1') 
+  // Get public URL
+  const {
+    data: { publicUrl },
+  } = supabase.storage
+    .from('profile-bucket-1')
     .getPublicUrl(fileName);
-  return publicUrlData.publicUrl;
+
+  return publicUrl;
 }
+
 
   // Cover photo upload handling
   document.getElementById('cover-upload').addEventListener('change', async (e) => {
