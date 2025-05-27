@@ -336,24 +336,26 @@
     }
   }
 
-  async function uploadImage(file, folder) {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
-    const { data, error } = await supabase.storage
-      .from('public') 
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
+ async function uploadImage(file, folder) {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
+  const { data, error } = await supabase.storage
+    .from('profile-bucket-1') 
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
 
-    if (error) {
-      alert('Upload failed: ' + error.message);
-      throw error;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from('public').getPublicUrl(fileName);
-    return publicUrlData.publicUrl;
+  if (error) {
+    alert('Upload failed: ' + error.message);
+    throw error;
   }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('profile-bucket-1') 
+    .getPublicUrl(fileName);
+  return publicUrlData.publicUrl;
+}
 
   // Cover photo upload handling
   document.getElementById('cover-upload').addEventListener('change', async (e) => {
