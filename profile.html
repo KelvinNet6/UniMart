@@ -15,8 +15,9 @@
       width: 100%;
       height: 200px;
       background: url('https://via.placeholder.com/1200x300?text=Cover+Photo') center/cover no-repeat;
-      border-bottom: 4px solid #007bff;
+      border-bottom: 4px solid #000000;
       position: relative;
+      z-index: 0;
     }
 
     .cover-upload-wrapper {
@@ -27,7 +28,7 @@
     }
 
     .cover-upload-wrapper label {
-      background: rgba(0, 123, 255, 0.8);
+      background: rgba(0, 0, 0, 0.8);
       color: white;
       padding: 8px 12px;
       border-radius: 8px;
@@ -53,7 +54,7 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      margin-top: 5px;
+      margin-top: 2px;
       position: relative;
       z-index: 1;
     }
@@ -73,7 +74,7 @@
     }
 
     .edit-btn {
-      background: #007bff;
+      background: #000000;
       color: white;
       border: none;
       padding: 10px 16px;
@@ -83,7 +84,7 @@
     }
 
     .edit-btn:hover {
-      background: #0056b3;
+      background: #333333;
     }
 
     .message-icon-wrapper {
@@ -91,7 +92,7 @@
     }
 
     .message-icon {
-      background: #28a745;
+      background: #000000;
       color: white;
       border: none;
       padding: 10px 14px;
@@ -116,7 +117,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
-      margin-top: 20px;
     }
 
     .product-card {
@@ -167,7 +167,7 @@
     }
 
     .modal-content button {
-      background: #007bff;
+      background: #000000;
       color: white;
       padding: 10px;
       border: none;
@@ -177,7 +177,7 @@
     }
 
     .modal-content button:hover {
-      background: #0056b3;
+      background: #333333;
     }
 
     #preview-image {
@@ -187,6 +187,30 @@
       margin-top: 10px;
       border-radius: 8px;
       display: none;
+    }
+
+    /* Responsive mobile tweaks */
+    @media (max-width: 600px) {
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 220px;
+      }
+      .profile-header > div:last-child {
+        margin-top: 15px;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      #profile-image {
+        width: 80px;
+        height: 80px;
+      }
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
     }
   </style>
 </head>
@@ -200,8 +224,8 @@
   </div>
 </div>
 
-<!-- Profile Header directly under cover -->
 <div class="container">
+  <!-- Profile Header -->
   <div class="profile-header">
     <div style="display: flex; align-items: center; gap: 1rem;">
       <img id="profile-image" src="https://via.placeholder.com/120" alt="Trader Profile Picture" />
@@ -223,11 +247,10 @@
     </div>
   </div>
 
-  <!-- Product Grid -->
   <div id="product-grid" class="product-grid"></div>
 </div>
 
-<!-- Modal -->
+<!-- Product Modal -->
 <div id="product-modal" class="modal">
   <div class="modal-content">
     <h2>Add Product</h2>
@@ -246,11 +269,140 @@
   </div>
 </div>
 
-<script>
-  function goToEdit() {
-    window.location.href = "settings.html";
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+  const supabaseUrl = 'https://honrgtrvzpymssmlbcbn.supabase.co'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw'
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
+  // Current logged-in user
+  let currentUser = null;
+
+  async function fetchUser() {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      alert('Please log in first.');
+      // Redirect to login or handle unauthenticated state
+      return;
+    }
+    currentUser = user;
+    loadUserProfile();
+    loadUserProducts();
   }
 
+  async function loadUserProfile() {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .single();
+
+    if (data) {
+      document.getElementById('display-name').textContent = data.full_name || 'Trader Name';
+      document.getElementById('display-location').textContent = data.location || '';
+      document.getElementById('display-bio').textContent = data.bio || '';
+      document.getElementById('profile-image').src = data.avatar_url || 'https://via.placeholder.com/120';
+      if (data.cover_url) {
+        document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_url}')`;
+      }
+    }
+  }
+
+  async function loadUserProducts() {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false });
+
+    const productGrid = document.getElementById('product-grid');
+    productGrid.innerHTML = '';
+    if (data && data.length > 0) {
+      data.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image_url}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>${product.price}</p>
+          <p>${product.category}</p>
+          <p>${product.description || ''}</p>
+        `;
+        productGrid.appendChild(card);
+      });
+    } else {
+      productGrid.innerHTML = '<p>No products yet.</p>';
+    }
+  }
+
+  async function uploadImage(file, folder) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
+    const { data, error } = await supabase.storage
+      .from('public') // make sure your storage bucket is named 'public' or update accordingly
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      alert('Upload failed: ' + error.message);
+      throw error;
+    }
+
+    const { data: publicUrlData } = supabase.storage.from('public').getPublicUrl(fileName);
+    return publicUrlData.publicUrl;
+  }
+
+  // Cover photo upload handling
+  document.getElementById('cover-upload').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadImage(file, 'cover_photos');
+      document.querySelector('.cover-photo').style.backgroundImage = `url('${url}')`;
+
+      // Update profile cover_url in DB
+      const { error } = await supabase
+        .from('profiles')
+        .update({ cover_url: url })
+        .eq('id', currentUser.id);
+
+      if (error) alert('Error saving cover photo: ' + error.message);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  // Profile image upload handling
+  document.getElementById('profile-image').addEventListener('click', () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const url = await uploadImage(file, 'avatars');
+        document.getElementById('profile-image').src = url;
+
+        // Update profile avatar_url in DB
+        const { error } = await supabase
+          .from('profiles')
+          .update({ avatar_url: url })
+          .eq('id', currentUser.id);
+
+        if (error) alert('Error saving profile photo: ' + error.message);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fileInput.click();
+  });
+
+  // Add product modal handling
   function openModal() {
     document.getElementById('product-modal').style.display = 'flex';
   }
@@ -262,7 +414,7 @@
     }
   }
 
-  let uploadedImageDataURL = '';
+  let uploadedProductImageUrl = '';
 
   function previewImage(event) {
     const file = event.target.files[0];
@@ -270,58 +422,71 @@
 
     const reader = new FileReader();
     reader.onload = function(e) {
-      uploadedImageDataURL = e.target.result;
       const preview = document.getElementById('preview-image');
-      preview.src = uploadedImageDataURL;
+      preview.src = e.target.result;
       preview.style.display = 'block';
     }
     reader.readAsDataURL(file);
   }
 
-  function addProduct() {
-    const name = document.getElementById('product-name').value;
-    const price = document.getElementById('product-price').value;
+  async function addProduct() {
+    const name = document.getElementById('product-name').value.trim();
+    const price = document.getElementById('product-price').value.trim();
     const category = document.getElementById('product-category').value;
-    const description = document.getElementById('product-description').value;
+    const description = document.getElementById('product-description').value.trim();
+    const imageFileInput = document.getElementById('product-image');
+    const imageFile = imageFileInput.files[0];
 
-    if (!name || !price || !uploadedImageDataURL || !category) {
-      alert("Please fill all required fields.");
+    if (!name || !price || !category || !imageFile) {
+      alert('Please fill all required fields and upload an image.');
       return;
     }
 
-    const productGrid = document.getElementById('product-grid');
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `
-      <img src="${uploadedImageDataURL}" alt="${name}">
-      <h3>${name}</h3>
-      <p>${price}</p>
-      <p>${category}</p>
-      <p>${description}</p>
-    `;
-    productGrid.prepend(card);
+    try {
+      const imageUrl = await uploadImage(imageFile, 'products');
 
-    document.getElementById('product-modal').style.display = 'none';
-    document.getElementById('product-name').value = '';
-    document.getElementById('product-price').value = '';
-    document.getElementById('product-image').value = '';
-    document.getElementById('product-category').value = '';
-    document.getElementById('product-description').value = '';
-    document.getElementById('preview-image').style.display = 'none';
-    uploadedImageDataURL = '';
+      const { data, error } = await supabase.from('products').insert([
+        {
+          user_id: currentUser.id,
+          name,
+          price,
+          category,
+          description,
+          image_url: imageUrl,
+          created_at: new Date()
+        }
+      ]);
+
+      if (error) {
+        alert('Error adding product: ' + error.message);
+        return;
+      }
+
+      // Refresh product list
+      loadUserProducts();
+
+      // Clear and close modal
+      document.getElementById('product-name').value = '';
+      document.getElementById('product-price').value = '';
+      document.getElementById('product-category').value = '';
+      document.getElementById('product-description').value = '';
+      imageFileInput.value = '';
+      document.getElementById('preview-image').style.display = 'none';
+      document.getElementById('product-modal').style.display = 'none';
+
+    } catch (error) {
+      console.error(error);
+      alert('Failed to upload product image.');
+    }
   }
 
-  // Cover photo preview
-  document.getElementById('cover-upload').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  function goToEdit() {
+    window.location.href = 'settings.html';
+  }
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.querySelector('.cover-photo').style.backgroundImage = `url('${e.target.result}')`;
-    };
-    reader.readAsDataURL(file);
-  });
+  // On page load
+  fetchUser();
+
 </script>
 
 </body>
