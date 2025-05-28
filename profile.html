@@ -249,6 +249,16 @@
 
   <div id="product-grid" class="product-grid"></div>
 </div>
+<!-- Edit Profile Modal -->
+<div id="edit-profile-modal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Profile</h2>
+    <input type="text" id="edit-username" placeholder="Username" />
+    <input type="text" id="edit-location" placeholder="Location" />
+    <textarea id="edit-bio" placeholder="Bio" rows="3"></textarea>
+    <button onclick="saveProfile()">Save Changes</button>
+  </div>
+</div>
 
 <!-- Product Modal -->
 <div id="product-modal" class="modal">
@@ -516,6 +526,43 @@ async function ensureProfile(userId) {
   function goToEdit() {
     window.location.href = 'settings.html';
   }
+  
+function goToEdit() {
+  document.getElementById('edit-profile-modal').style.display = 'flex';
+
+  // Pre-fill current values
+  supabase
+    .from('profiles')
+    .select('username, location, bio')
+    .eq('id', currentUser.id)
+    .single()
+    .then(({ data }) => {
+      if (data) {
+        document.getElementById('edit-username').value = data.username || '';
+        document.getElementById('edit-location').value = data.location || '';
+        document.getElementById('edit-bio').value = data.bio || '';
+      }
+    });
+}
+
+  async function saveProfile() {
+  const username = document.getElementById('edit-username').value.trim();
+  const location = document.getElementById('edit-location').value.trim();
+  const bio = document.getElementById('edit-bio').value.trim();
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ username, location, bio })
+    .eq('id', currentUser.id);
+
+  if (error) {
+    alert('Error updating profile: ' + error.message);
+    return;
+  }
+
+  document.getElementById('edit-profile-modal').style.display = 'none';
+  loadUserProfile(); // Refresh displayed info
+}
 
   // On page load
   fetchUser();
