@@ -473,6 +473,12 @@ async function ensureProfile(userId) {
   }
 
   async function addProduct() {
+    
+    if (!currentUser || !currentUser.id) {
+    alert('Please wait for user to load or log in again.');
+    return;
+  }
+    
     const name = document.getElementById('product-name').value.trim();
     const price = document.getElementById('product-price').value.trim();
     const category = document.getElementById('product-category').value;
