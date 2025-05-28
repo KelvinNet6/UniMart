@@ -523,7 +523,7 @@ async function ensureProfile(userId) {
     }
   }
   
-function goToEdit() {
+window.goToEdit = function() {
   document.getElementById('edit-profile-modal').style.display = 'flex';
 
   // Pre-fill current values
@@ -539,9 +539,9 @@ function goToEdit() {
         document.getElementById('edit-bio').value = data.bio || '';
       }
     });
-}
+};
 
-  async function saveProfile() {
+window.saveProfile = async function() {
   const username = document.getElementById('edit-username').value.trim();
   const location = document.getElementById('edit-location').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
@@ -558,7 +558,8 @@ function goToEdit() {
 
   document.getElementById('edit-profile-modal').style.display = 'none';
   loadUserProfile(); // Refresh displayed info
-}
+};
+
 
   // On page load
   fetchUser();
