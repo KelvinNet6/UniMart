@@ -446,9 +446,9 @@ async function ensureProfile(userId) {
   });
 
   // Add product modal handling
-  function openModal() {
-    document.getElementById('product-modal').style.display = 'flex';
-  }
+  window.openModal = function () {
+             document.getElementById('product-modal').style.display = 'flex';
+           };
 
   window.onclick = function(e) {
     const modal = document.getElementById('product-modal');
