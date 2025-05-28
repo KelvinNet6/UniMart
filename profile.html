@@ -278,20 +278,42 @@
 
   // Current logged-in user
   let currentUser = null;
-
-  async function fetchUser() {
-      const {
-             data: { session },
-              error
-              } = await supabase.auth.getSession();
-              if (error || !session || !session.user) {
-              alert('Please log in first.');
-              return;
-       }
-    currentUser = session.user;
-    loadUserProfile();
-    loadUserProducts();
+  
+async function fetchUser() {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) {
+    alert('Please log in first.');
+    return;
   }
+
+  currentUser = user;
+
+  // Ensure profile exists
+  await ensureProfile(currentUser.id);
+
+  loadUserProfile();
+  loadUserProducts();
+}
+
+async function ensureProfile(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+
+  if (!data) {
+    const { error: insertError } = await supabase.from('profiles').insert({
+      id: userId,
+      full_name: currentUser.user_metadata?.full_name || '',
+      location: '',
+      bio: '',
+      profile_image_url: '',
+      cover_image_url: ''
+    });
+    if (insertError) console.error('Profile creation failed:', insertError.message);
+  }
+}
 
   async function loadUserProfile() {
     const { data, error } = await supabase
