@@ -305,7 +305,7 @@ async function ensureProfile(userId) {
   if (!data) {
     const { error: insertError } = await supabase.from('profiles').insert({
       id: userId,
-      full_name: currentUser.user_metadata?.full_name || '',
+      username: currentUser.user_metadata?.username || '',
       location: '',
       bio: '',
       profile_image_url: '',
@@ -323,7 +323,7 @@ async function ensureProfile(userId) {
       .single();
 
     if (data) {
-      document.getElementById('display-name').textContent = data.full_name || 'Trader Name';
+      document.getElementById('display-name').textContent = data.username || 'Trader Name';
       document.getElementById('display-location').textContent = data.location || '';
       document.getElementById('display-bio').textContent = data.bio || '';
       document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
