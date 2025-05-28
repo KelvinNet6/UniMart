@@ -298,12 +298,33 @@ async function fetchUser() {
 
   currentUser = user;
 
-  // Ensure profile exists
+  // 🔐 Ensure 'users' table contains this user
+  const { data: existingUser, error: userCheckError } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', user.id)
+    .single();
+
+  if (!existingUser) {
+    const { error: insertUserError } = await supabase.from('users').insert({
+      id: user.id,
+      username: user.user_metadata?.username || '',
+      email: user.email,
+      role: 'trader'
+    });
+
+    if (insertUserError) {
+      console.error('Failed to insert user into users table:', insertUserError.message);
+    }
+  }
+
+  // ✅ Ensure profile exists
   await ensureProfile(currentUser.id);
 
   loadUserProfile();
   loadUserProducts();
 }
+
 
 async function ensureProfile(userId) {
   const { data, error } = await supabase
