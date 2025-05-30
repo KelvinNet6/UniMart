@@ -362,7 +362,7 @@ const { data, error } = await supabaseClient
   if (data && data.length > 0) {
    const productsWithUsernames = data.map(product => ({
   ...product,
-  user: product.users?.profiles?.username || 'Unknown'
+  user: product.profiles?.username || 'Unknown'
     }));
 
     allProducts = allProducts.concat(productsWithUsernames);
