@@ -365,47 +365,41 @@ async function ensureProfile(userId) {
       document.getElementById('display-bio').textContent = data.bio || '';
       document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
      if (data.cover_image_url) {
-         document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
+         document.querySelector('.cover-photo').style.backgroundImage = url('${data.cover_image_url}');
       }
     }
   }
-async function loadUserProducts() {
-  const { data, error } = await supabase
-    .from('products')
-    .select(`
-      *,
-      profiles (
-        username
-      )
-    `)
-    .order('created_at', { ascending: false });
 
-  const productGrid = document.getElementById('product-grid');
-  productGrid.innerHTML = '';
+  async function loadUserProducts() {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false });
 
-  if (data && data.length > 0) {
-    data.forEach(product => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <img src="${product.image_url}" alt="${product.name}">
-        <h3>${product.name}</h3>
-        <p>${product.price}</p>
-        <p>${product.category}</p>
-        <p>${product.description || ''}</p>
-        <p><strong>Posted by:</strong> ${product.profiles?.username || 'Unknown'}</p>
-      `;
-      productGrid.appendChild(card);
-    });
-  } else {
-    productGrid.innerHTML = '<p>No products yet.</p>';
+    const productGrid = document.getElementById('product-grid');
+    productGrid.innerHTML = '';
+    if (data && data.length > 0) {
+      data.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = 
+          <img src="${product.image_url}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>${product.price}</p>
+          <p>${product.category}</p>
+          <p>${product.description || ''}</p>
+        ;
+        productGrid.appendChild(card);
+      });
+    } else {
+      productGrid.innerHTML = '<p>No products yet.</p>';
+    }
   }
-}
-
 
  async function uploadImage(file, folder) {
   const fileExt = file.name.split('.').pop();
-  const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
+  const fileName = ${folder}/${currentUser.id}-${Date.now()}.${fileExt};
   
   // Upload to Supabase Storage
   const { data, error } = await supabase.storage
@@ -438,7 +432,7 @@ async function loadUserProducts() {
 
     try {
       const url = await uploadImage(file, 'cover_photos');
-      document.querySelector('.cover-photo').style.backgroundImage = `url('${url}')`;
+      document.querySelector('.cover-photo').style.backgroundImage = url('${url}');
 
       // Update profile cover_url in DB
       const { error } = await supabase
