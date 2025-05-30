@@ -345,9 +345,7 @@ const { data, error } = await supabaseClient
   .from("products")
   .select(`
     *,
-    profiles!products_id_fkey (
-      username
-    )
+    profiles!products_id_fkey (username)
   `)
   .order("created_at", { ascending: false })
   .range(page * pageSize, (page + 1) * pageSize - 1);
