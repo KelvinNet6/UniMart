@@ -345,7 +345,7 @@ const { data, error } = await supabaseClient
   .from("products")
   .select(`
     *,
-    profiles (
+    profiles!fk_products_user (
       username
     )
   `)
