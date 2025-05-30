@@ -343,12 +343,14 @@
 
   const { data, error } = await supabaseClient
     .from("products")
-    .select(`
-      *,
-      profiles (
-        username
-      )
-    `)
+   .select(`
+  *,
+  users (
+    profiles (
+      username
+    )
+  )
+`)
     .order("created_at", { ascending: false })
     .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -359,10 +361,10 @@
   }
 
   if (data && data.length > 0) {
-    const productsWithUsernames = data.map(product => ({
-      ...product,
-      user: product.profiles?.username || 'Unknown'
-    }));
+   const productsWithUsernames = data.map(product => ({
+  ...product,
+  user: product.users?.profiles?.username || 'Unknown'
+}));
 
     allProducts = allProducts.concat(productsWithUsernames);
     displayProducts(productsWithUsernames, searchInput.value);
