@@ -375,15 +375,15 @@ function displayProducts(products, filter = "") {
   filtered.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("product-card");
-    card.innerHTML = 
-      <img src="${p.image_url}" alt="${p.name}" />
-      <div class="info">
-        <h3>${p.name}</h3>
-        <p>Price: ${p.price}</p>
-        <p class="posted-by">Listed by ${p.user}</p>
-        <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
-      </div>
-    ;
+   card.innerHTML = `
+  <img src="${p.image_url}" alt="${p.name}" />
+  <div class="info">
+    <h3>${p.name}</h3>
+    <p>Price: ${p.price}</p>
+    <p class="posted-by">Listed by ${p.user}</p>
+    <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
+  </div>
+  `;
     feed.appendChild(card);
   });
 }
