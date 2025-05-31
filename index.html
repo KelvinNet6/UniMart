@@ -161,11 +161,11 @@
   margin: 2rem auto;
   padding: 0 1rem;
   display: block;
-  height: 100vh; /* Take full screen height */
-  overflow-y: auto; /* Vertical scroll */
+  height: 100vh;
+  overflow-y: auto;
 }
 
-/* Product feed as vertical stack */
+/* Feed stack layout */
 #product-feed {
   display: flex;
   flex-direction: column;
@@ -173,23 +173,24 @@
   padding-bottom: 2rem;
 }
 
-/* Product card styling */
+/* Product card - full width, nice rounded corners */
 .product-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: 100%;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-/* Image should fill top part */
+/* Image fills card top, fits perfectly */
 .product-card img {
   width: 100%;
-  height: 220px;
+  height: 220px; /* Adjust if needed */
   object-fit: cover;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  display: block;
 }
 
 /* Info section */
@@ -198,9 +199,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex-grow: 1;
 }
 
-/* Title and text */
+/* Text styles */
 .product-card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;
@@ -217,7 +219,7 @@
   margin-top: 0.5rem;
 }
 
-/* Button styles */
+/* Button style */
 .product-card .shop-button,
 .product-card button {
   margin-top: 0.75rem;
