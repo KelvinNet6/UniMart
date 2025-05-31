@@ -334,15 +334,16 @@
   if (isLoading) return;
   isLoading = true;
 
-const { data, error } = await supabaseClient
-  .from("products")
-  .select(`
-    *,
-    profiles!products_id_fkey (username)
-  `)
-  .order("created_at", { ascending: false })
-  .range(page * pageSize, (page + 1) * pageSize - 1);
-
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select(
+      *,
+      profiles (
+        username
+      )
+    )
+    .order("created_at", { ascending: false })
+    .range(page * pageSize, (page + 1) * pageSize - 1);
 
   if (error) {
     console.error("Error fetching products:", error);
@@ -351,9 +352,9 @@ const { data, error } = await supabaseClient
   }
 
   if (data && data.length > 0) {
-   const productsWithUsernames = data.map(product => ({
-  ...product,
-  user: product.profiles?.username || 'Unknown'
+    const productsWithUsernames = data.map(product => ({
+      ...product,
+      user: product.profiles?.username || 'Unknown'
     }));
 
     allProducts = allProducts.concat(productsWithUsernames);
@@ -379,15 +380,15 @@ function displayProducts(products, filter = "") {
   filtered.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("product-card");
-    card.innerHTML = `
+    card.innerHTML = 
       <img src="${p.image_url}" alt="${p.name}" />
       <div class="info">
         <h3>${p.name}</h3>
         <p>Price: ${p.price}</p>
-        <p class="posted-by"><strong>Listed by:</strong> ${p.profiles?.username || 'Unknown'}</p>
-  <a href="profile.html?user_id=${p.profile_id}" class="shop-link">Visit Shop</a>
+        <p class="posted-by">Listed by ${p.user}</p>
+        <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
       </div>
-    `;
+    ;
     feed.appendChild(card);
   });
 }
@@ -403,7 +404,7 @@ function displayProducts(products, filter = "") {
         loginSection.style.display = "none";
         registerSection.style.display = "none";
         welcomeMessage.style.display = "block";
-        welcomeMessage.textContent = `Welcome, ${user.email}`;
+        welcomeMessage.textContent = Welcome, ${user.email};
         feedWrapper.style.display = "block";
         searchBar.style.display = "flex";
         navBar.style.display = "flex";
@@ -523,6 +524,13 @@ function displayProducts(products, filter = "") {
       updateUI();
     });
   };
+  
+  window.addEventListener("scroll", () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+    fetchMoreProducts();
+  }
+});
+
 </script>
 </body>
 </html>
