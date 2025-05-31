@@ -364,8 +364,8 @@ async function ensureProfile(userId) {
       document.getElementById('display-location').textContent = data.location || '';
       document.getElementById('display-bio').textContent = data.bio || '';
       document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
-     if (data.cover_image_url) {
-         document.querySelector('.cover-photo').style.backgroundImage = url('${data.cover_image_url}');
+    if (data.cover_image_url) {
+       document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
       }
     }
   }
