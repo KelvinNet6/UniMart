@@ -401,7 +401,7 @@ async function ensureProfile(userId) {
 
  async function uploadImage(file, folder) {
   const fileExt = file.name.split('.').pop();
-  const fileName = ${folder}/${currentUser.id}-${Date.now()}.${fileExt};
+  const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
   
   // Upload to Supabase Storage
   const { data, error } = await supabase.storage
