@@ -24,10 +24,10 @@
     .circle-cards {
       display: flex;
       gap: 3rem;
-      justify-content: flex-start;
-      flex-wrap: nowrap;
-      margin: 2rem;
-      overflow-x: auto;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 2rem auto;
+      max-width: 1200px;
     }
     .circle-card {
       background: white;
@@ -49,7 +49,9 @@
       color: #333;
     }
     #statsChart {
-      max-width: 900px;
+      width: 100%;
+      max-width: 1200px;
+      height: 400px;
       margin: 2rem auto;
     }
   </style>
@@ -168,11 +170,12 @@
             backgroundColor: baseColors,
             borderRadius: 10,
             borderSkipped: false,
-            maxBarThickness: 60,
+            maxBarThickness: 80,
           }]
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: {
