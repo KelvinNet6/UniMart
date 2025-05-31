@@ -160,16 +160,15 @@
   max-width: 960px;
   margin: 2rem auto;
   padding: 0 1rem;
-  display: none;
+  display: block; /* Ensure it's visible */
 }
 
-/* Product grid - 2 cards per row by default */
 #product-feed {
   display: flex;
-  overflow-x: auto;
+  flex-direction: column;
   gap: 1rem;
-  padding-bottom: 1rem;
-  scroll-snap-type: x mandatory;
+  overflow-y: auto;
+  max-height: 600px;
 }
 
 .product-card {
@@ -242,10 +241,6 @@
 
   #search-bar button {
     border-radius: 5px;
-  }
-
-  #product-feed {
-    grid-template-columns: 1fr; /* One column */
   }
 }
   </style>
