@@ -116,7 +116,7 @@
     let totalRevenue = 0;
 
     async function loadUsers() {
-      const { data, error } = await supabase.from('profiles').select('*');
+      const { data, error } = await supabaseClient.from('profiles').select('*');
       const usersDiv = document.getElementById('users-list');
       if (error) return usersDiv.innerHTML = `<p>Error: ${error.message}</p>`;
       usersDiv.innerHTML = '';
@@ -133,7 +133,7 @@
     }
 
     async function loadProducts() {
-      const { data, error } = await supabase.from('products').select('*');
+      const { data, error } = await supabaseClient.from('products').select('*');
       const productsDiv = document.getElementById('products-list');
       if (error) return productsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
       productsDiv.innerHTML = '';
@@ -150,7 +150,7 @@
     }
 
     async function loadSubscriptions() {
-      const { data, error } = await supabase.from('subscriptions').select('*');
+      const { data, error } = await supabaseClient.from('subscriptions').select('*');
       const subsDiv = document.getElementById('subscriptions-list');
       if (error) return subsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
       subsDiv.innerHTML = '';
@@ -167,7 +167,7 @@
     }
 
     async function loadPayments() {
-      const { data, error } = await supabase.from('payments').select('*');
+      const { data, error } = await supabaseClient.from('payments').select('*');
       const paymentsDiv = document.getElementById('payments-list');
       if (error) return paymentsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
       paymentsDiv.innerHTML = '';
