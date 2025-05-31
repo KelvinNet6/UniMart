@@ -21,13 +21,20 @@
       max-width: 100%;
       padding: 0 1rem;
     }
+    .dashboard-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem auto;
+      max-width: 1600px;
+    }
     .circle-cards {
       display: flex;
       gap: 3rem;
-      justify-content: center;
       flex-wrap: wrap;
-      margin: 2rem auto;
-      max-width: 1200px;
+      justify-content: center;
+      max-width: 900px;
     }
     .circle-card {
       background: white;
@@ -38,21 +45,28 @@
       text-align: center;
       flex-shrink: 0;
     }
+    .chart-wrapper {
+      flex-grow: 1;
+      min-width: 600px;
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      height: 100%;
+    }
     canvas {
       width: 270px !important;
       height: 270px !important;
       margin: 0 auto;
       display: block;
     }
+    .chart-wrapper canvas {
+      width: 100% !important;
+      height: 500px !important;
+    }
     h2 {
       margin-bottom: 1rem;
       color: #333;
-    }
-    #statsChart {
-      width: 100%;
-      max-width: 1200px;
-      height: 400px;
-      margin: 2rem auto;
     }
   </style>
 </head>
@@ -61,28 +75,30 @@
     <h1>Admin Dashboard - One-Stop Trade</h1>
   </header>
   <main class="content">
-    <div class="circle-cards">
-      <div class="circle-card">
-        <h2>Users</h2>
-        <canvas id="usersChart"></canvas>
+    <div class="dashboard-section">
+      <div class="circle-cards">
+        <div class="circle-card">
+          <h2>Users</h2>
+          <canvas id="usersChart"></canvas>
+        </div>
+        <div class="circle-card">
+          <h2>Products</h2>
+          <canvas id="productsChart"></canvas>
+        </div>
+        <div class="circle-card">
+          <h2>Subscribers</h2>
+          <canvas id="subscribersChart"></canvas>
+        </div>
+        <div class="circle-card">
+          <h2>Revenue ($)</h2>
+          <canvas id="revenueChart"></canvas>
+        </div>
       </div>
-      <div class="circle-card">
-        <h2>Products</h2>
-        <canvas id="productsChart"></canvas>
-      </div>
-      <div class="circle-card">
-        <h2>Subscribers</h2>
-        <canvas id="subscribersChart"></canvas>
-      </div>
-      <div class="circle-card">
-        <h2>Revenue ($)</h2>
-        <canvas id="revenueChart"></canvas>
+      <div class="chart-wrapper">
+        <h2 style="text-align: center;">Statistics Overview</h2>
+        <canvas id="statsChart"></canvas>
       </div>
     </div>
-    <section id="overview">
-      <h2 style="text-align: center;">Statistics Overview</h2>
-      <canvas id="statsChart"></canvas>
-    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -96,8 +112,8 @@
     let userCount = 0;
     let productCount = 0;
 
-    const defaultSubscribers = 45; // percent
-    const defaultRevenuePercent = 70; // percent
+    const defaultSubscribers = 45;
+    const defaultRevenuePercent = 70;
     const defaultSubscribersCount = 450;
     const defaultRevenueValue = 7000;
 
