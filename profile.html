@@ -383,13 +383,15 @@ async function ensureProfile(userId) {
       data.forEach(product => {
         const card = document.createElement('div');
         card.className = 'product-card';
-        card.innerHTML = 
-          <img src="${product.image_url}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>${product.price}</p>
-          <p>${product.category}</p>
-          <p>${product.description || ''}</p>
-        ;
+       card.innerHTML = `
+       <img src="${product.image_url}" alt="${product.name}">
+       <div class="info">
+      <h3>${product.name}</h3>
+      <p>${product.price}</p>
+      <p>${product.category}</p>
+      <p>${product.description || ''}</p>
+      </div>
+    `;
         productGrid.appendChild(card);
       });
     } else {
