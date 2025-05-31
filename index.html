@@ -389,8 +389,8 @@ function displayProducts(products, filter = "") {
       <div class="info">
         <h3>${p.name}</h3>
         <p>Price: ${p.price}</p>
-        <p><strong>Listed by:</strong> ${product.profiles?.username || 'Unknown'}</p>
-  <a href="profile.html?user_id=${product.profile_id}" class="shop-link">Visit Shop</a>
+        <p class="posted-by"><strong>Listed by:</strong> ${p.profiles?.username || 'Unknown'}</p>
+  <a href="profile.html?user_id=${p.profile_id}" class="shop-link">Visit Shop</a>
       </div>
     `;
     feed.appendChild(card);
