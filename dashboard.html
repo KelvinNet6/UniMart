@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - One-Stop Trade</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    header {
+      background-color: #1e1e2f;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .content {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    .card {
+      background: #fff;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .card p {
+      margin: 0.3rem 0;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    .btn:hover {
+      background: #555;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-width: 600px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard - One-Stop Trade</h1>
+  </header>
+
+  <main class="content">
+    <section id="overview">
+      <h2>Statistics Overview</h2>
+      <div class="card">
+        <canvas id="statsChart"></canvas>
+      </div>
+    </section>
+
+    <section id="users">
+      <h2>Users</h2>
+      <div id="users-list"></div>
+    </section>
+
+    <section id="products">
+      <h2>Products</h2>
+      <div id="products-list"></div>
+    </section>
+
+    <section id="subscriptions">
+      <h2>Subscriptions</h2>
+      <div id="subscriptions-list"></div>
+    </section>
+
+    <section id="payments">
+      <h2>Payments</h2>
+      <div id="payments-list"></div>
+    </section>
+  </main>
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = supabase.createClient(
+      'https://YOUR_PROJECT.supabase.co',
+      'YOUR_PUBLIC_ANON_KEY'
+    );
+
+    let userCount = 0;
+    let productCount = 0;
+    let subscriptionCount = 0;
+    let totalRevenue = 0;
+
+    async function loadUsers() {
+      const { data, error } = await supabase.from('profiles').select('*');
+      const usersDiv = document.getElementById('users-list');
+      if (error) return usersDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      usersDiv.innerHTML = '';
+      userCount = data.length;
+      data.forEach(user => {
+        usersDiv.innerHTML += `
+          <div class="card">
+            <p><strong>Username:</strong> ${user.username}</p>
+            <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
+            <p><strong>Role:</strong> ${user.role || 'user'}</p>
+          </div>
+        `;
+      });
+    }
+
+    async function loadProducts() {
+      const { data, error } = await supabase.from('products').select('*');
+      const productsDiv = document.getElementById('products-list');
+      if (error) return productsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      productsDiv.innerHTML = '';
+      productCount = data.length;
+      data.forEach(product => {
+        productsDiv.innerHTML += `
+          <div class="card">
+            <p><strong>Name:</strong> ${product.name}</p>
+            <p><strong>Price:</strong> ${product.price}</p>
+            <p><strong>Owner:</strong> ${product.user_id}</p>
+          </div>
+        `;
+      });
+    }
+
+    async function loadSubscriptions() {
+      const { data, error } = await supabase.from('subscriptions').select('*');
+      const subsDiv = document.getElementById('subscriptions-list');
+      if (error) return subsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      subsDiv.innerHTML = '';
+      subscriptionCount = data.length;
+      data.forEach(sub => {
+        subsDiv.innerHTML += `
+          <div class="card">
+            <p><strong>User:</strong> ${sub.user_id}</p>
+            <p><strong>Plan:</strong> ${sub.plan}</p>
+            <p><strong>Status:</strong> ${sub.status}</p>
+          </div>
+        `;
+      });
+    }
+
+    async function loadPayments() {
+      const { data, error } = await supabase.from('payments').select('*');
+      const paymentsDiv = document.getElementById('payments-list');
+      if (error) return paymentsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      paymentsDiv.innerHTML = '';
+      totalRevenue = 0;
+      data.forEach(payment => {
+        totalRevenue += parseFloat(payment.amount);
+        paymentsDiv.innerHTML += `
+          <div class="card">
+            <p><strong>User:</strong> ${payment.user_id}</p>
+            <p><strong>Amount:</strong> $${payment.amount}</p>
+            <p><strong>Status:</strong> ${payment.status}</p>
+            <p><strong>Date:</strong> ${new Date(payment.created_at).toLocaleString()}</p>
+          </div>
+        `;
+      });
+    }
+
+    function renderStatsChart() {
+      const ctx = document.getElementById('statsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Users', 'Products', 'Subscriptions', 'Revenue ($)'],
+          datasets: [{
+            label: 'Dashboard Stats',
+            data: [userCount, productCount, subscriptionCount, totalRevenue],
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    window.onload = async () => {
+      await Promise.all([loadUsers(), loadProducts(), loadSubscriptions(), loadPayments()]);
+      renderStatsChart();
+    };
+  </script>
+</body>
+</html>
