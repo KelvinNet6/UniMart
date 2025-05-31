@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard - One-Stop Trade</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel@1.0.3"></script>
   <style>
     body {
       margin: 0;
@@ -25,45 +26,39 @@
       margin: 0 auto;
     }
 
-    section {
-      margin-bottom: 2rem;
-    }
-
-    h1, h2 {
-      color: #333;
-    }
-
-    .card {
+    .overview-chart {
       background: #fff;
-      padding: 1rem;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .circle-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .circle-card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 250px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #333;
       margin-bottom: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .card p {
-      margin: 0.3rem 0;
-    }
-
-    .btn {
-      padding: 0.5rem 1rem;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    .btn:hover {
-      background: #555;
     }
 
     canvas {
-      width: 100% !important;
-      max-width: 600px;
-      margin-top: 1rem;
+      width: 200px !important;
+      height: 200px !important;
     }
   </style>
 </head>
@@ -73,32 +68,29 @@
   </header>
 
   <main class="content">
-    <section id="overview">
-      <h2>Statistics Overview</h2>
-      <div class="card">
-        <canvas id="statsChart"></canvas>
+    <div class="overview-chart">
+      <h2>Overall Stats</h2>
+      <canvas id="overviewChart"></canvas>
+    </div>
+
+    <div class="circle-wrapper">
+      <div class="circle-card">
+        <h2>Users</h2>
+        <canvas id="usersChart"></canvas>
       </div>
-    </section>
-
-    <section id="users">
-      <h2>Users</h2>
-      <div id="users-list"></div>
-    </section>
-
-    <section id="products">
-      <h2>Products</h2>
-      <div id="products-list"></div>
-    </section>
-
-    <section id="subscriptions">
-      <h2>Subscriptions</h2>
-      <div id="subscriptions-list"></div>
-    </section>
-
-    <section id="payments">
-      <h2>Payments</h2>
-      <div id="payments-list"></div>
-    </section>
+      <div class="circle-card">
+        <h2>Products</h2>
+        <canvas id="productsChart"></canvas>
+      </div>
+      <div class="circle-card">
+        <h2>Subscriptions</h2>
+        <canvas id="subscriptionsChart"></canvas>
+      </div>
+      <div class="circle-card">
+        <h2>Revenue ($)</h2>
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
   </main>
 
   <!-- Supabase Client -->
@@ -106,9 +98,9 @@
   <script>
     const { createClient } = supabase;
     const supabaseClient = createClient(
-         "https://honrgtrvzpymssmlbcbn.supabase.co",
+      "https://honrgtrvzpymssmlbcbn.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
-      );
+    );
 
     let userCount = 0;
     let productCount = 0;
@@ -117,82 +109,66 @@
 
     async function loadUsers() {
       const { data, error } = await supabaseClient.from('profiles').select('*');
-      const usersDiv = document.getElementById('users-list');
-      if (error) return usersDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-      usersDiv.innerHTML = '';
-      userCount = data.length;
-      data.forEach(user => {
-        usersDiv.innerHTML += `
-          <div class="card">
-            <p><strong>Username:</strong> ${user.username}</p>
-            <p><strong>Email:</strong> ${user.email || 'N/A'}</p>
-            <p><strong>Role:</strong> ${user.role || 'user'}</p>
-          </div>
-        `;
-      });
+      if (!error) userCount = data.length;
     }
 
     async function loadProducts() {
       const { data, error } = await supabaseClient.from('products').select('*');
-      const productsDiv = document.getElementById('products-list');
-      if (error) return productsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-      productsDiv.innerHTML = '';
-      productCount = data.length;
-      data.forEach(product => {
-        productsDiv.innerHTML += `
-          <div class="card">
-            <p><strong>Name:</strong> ${product.name}</p>
-            <p><strong>Price:</strong> ${product.price}</p>
-            <p><strong>Owner:</strong> ${product.user_id}</p>
-          </div>
-        `;
-      });
+      if (!error) productCount = data.length;
     }
 
     async function loadSubscriptions() {
       const { data, error } = await supabaseClient.from('subscriptions').select('*');
-      const subsDiv = document.getElementById('subscriptions-list');
-      if (error) return subsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-      subsDiv.innerHTML = '';
-      subscriptionCount = data.length;
-      data.forEach(sub => {
-        subsDiv.innerHTML += `
-          <div class="card">
-            <p><strong>User:</strong> ${sub.user_id}</p>
-            <p><strong>Plan:</strong> ${sub.plan}</p>
-            <p><strong>Status:</strong> ${sub.status}</p>
-          </div>
-        `;
-      });
+      if (!error) subscriptionCount = data.length;
     }
 
     async function loadPayments() {
       const { data, error } = await supabaseClient.from('payments').select('*');
-      const paymentsDiv = document.getElementById('payments-list');
-      if (error) return paymentsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
-      paymentsDiv.innerHTML = '';
       totalRevenue = 0;
-      data.forEach(payment => {
-        totalRevenue += parseFloat(payment.amount);
-        paymentsDiv.innerHTML += `
-          <div class="card">
-            <p><strong>User:</strong> ${payment.user_id}</p>
-            <p><strong>Amount:</strong> $${payment.amount}</p>
-            <p><strong>Status:</strong> ${payment.status}</p>
-            <p><strong>Date:</strong> ${new Date(payment.created_at).toLocaleString()}</p>
-          </div>
-        `;
+      if (!error) {
+        data.forEach(payment => {
+          totalRevenue += parseFloat(payment.amount);
+        });
+      }
+    }
+
+    function createCircleChart(id, value, color, label = '') {
+      const ctx = document.getElementById(id).getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: [label],
+          datasets: [{
+            data: [value, 100 - value],
+            backgroundColor: [color, '#e0e0e0'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          cutout: '75%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+            doughnutlabel: {
+              labels: [
+                { text: `${value}`, font: { size: '20' } },
+                { text: label }
+              ]
+            }
+          }
+        },
+        plugins: [Chart.plugins.getAll().filter(p => p.id === 'doughnutLabel')[0]]
       });
     }
 
-    function renderStatsChart() {
-      const ctx = document.getElementById('statsChart').getContext('2d');
+    function renderBarChart() {
+      const ctx = document.getElementById('overviewChart').getContext('2d');
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Users', 'Products', 'Subscriptions', 'Revenue ($)'],
+          labels: ['Users', 'Products', 'Subscriptions', 'Revenue'],
           datasets: [{
-            label: 'Dashboard Stats',
+            label: 'Totals',
             data: [userCount, productCount, subscriptionCount, totalRevenue],
             backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
           }]
@@ -200,23 +176,31 @@
         options: {
           responsive: true,
           plugins: {
-            legend: {
-              display: false
-            }
+            legend: { display: false }
           },
           scales: {
-            y: {
-              beginAtZero: true
-            }
+            y: { beginAtZero: true }
           }
         }
       });
     }
 
-    window.onload = async () => {
+    async function renderCharts() {
       await Promise.all([loadUsers(), loadProducts(), loadSubscriptions(), loadPayments()]);
-      renderStatsChart();
-    };
+
+      const maxUsers = 1000;
+      const maxProducts = 1000;
+      const maxSubs = 100;
+      const maxRevenue = 10000;
+
+      createCircleChart('usersChart', Math.round((userCount / maxUsers) * 100), '#4e73df', 'Users');
+      createCircleChart('productsChart', Math.round((productCount / maxProducts) * 100), '#1cc88a', 'Products');
+      createCircleChart('subscriptionsChart', Math.round((subscriptionCount / maxSubs) * 100), '#36b9cc', 'Subs');
+      createCircleChart('revenueChart', Math.round((totalRevenue / maxRevenue) * 100), '#f6c23e', 'Revenue');
+      renderBarChart();
+    }
+
+    window.onload = renderCharts;
   </script>
 </body>
 </html>
