@@ -26,6 +26,7 @@
       display: flex;
       gap: 2rem;
       justify-content: center;
+      flex-wrap: wrap;
       margin-bottom: 3rem;
     }
     .circle-card {
@@ -35,6 +36,7 @@
       width: 250px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+      flex-shrink: 0;
     }
     canvas {
       width: 200px !important;
@@ -66,6 +68,14 @@
         <h2>Products</h2>
         <canvas id="productsChart"></canvas>
       </div>
+      <div class="circle-card">
+        <h2>Subscribers</h2>
+        <canvas id="subscribersChart"></canvas>
+      </div>
+      <div class="circle-card">
+        <h2>Revenue ($)</h2>
+        <canvas id="revenueChart"></canvas>
+      </div>
     </div>
     <section id="overview">
       <h2>Statistics Overview</h2>
@@ -84,6 +94,12 @@
     let userCount = 0;
     let productCount = 0;
 
+    // Placeholder default values for subscribers and revenue
+    const defaultSubscribers = 45; // percent (out of 100)
+    const defaultRevenuePercent = 70; // percent (out of 100)
+    const defaultSubscribersCount = 450; // for bar chart count
+    const defaultRevenueValue = 7000;     // for bar chart count
+
     async function loadUsers() {
       const { data, error } = await supabaseClient.from('profiles').select('*');
       if (!error && data) userCount = data.length;
@@ -94,7 +110,7 @@
       if (!error && data) productCount = data.length;
     }
 
-    // Create circle progress chart (doughnut)
+    // Create circle progress chart (doughnut) with center text plugin
     function createCircleChart(id, value, color, label = '') {
       const ctx = document.getElementById(id).getContext('2d');
       new Chart(ctx, {
@@ -111,7 +127,6 @@
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
-            // Show center text using plugin (we'll do custom below)
           },
           animation: {
             animateRotate: true,
@@ -136,43 +151,94 @@
       });
     }
 
-    // Render bar chart with counts
-    function renderStatsChart() {
-      const ctx = document.getElementById('statsChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Users', 'Products'],
-          datasets: [{
-            label: 'Count',
-            data: [userCount, productCount],
-            backgroundColor: ['#4e73df', '#1cc88a']
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              precision: 0
+   function renderStatsChart() {
+  const maxUsers = 1000;
+  const maxProducts = 1000;
+  const maxSubscribers = 1000;  // adjusted for consistency
+  const maxRevenue = 10000;
+
+  // calculate progress percentage for each metric
+  const userProgress = Math.min(1, userCount / maxUsers);
+  const productProgress = Math.min(1, productCount / maxProducts);
+  const subscriberProgress = defaultSubscribersCount / maxSubscribers;
+  const revenueProgress = defaultRevenueValue / maxRevenue;
+
+  // data for bar chart is actual counts (or values)
+  const dataValues = [userCount, productCount, defaultSubscribersCount, defaultRevenueValue];
+  // colors for each bar matching the doughnut colors
+  const baseColors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'];
+
+  // Create gradient fill based on progress for each bar
+  const ctx = document.getElementById('statsChart').getContext('2d');
+  const gradientColors = baseColors.map((color, i) => {
+    // create gradient from light grey to color, proportional to progress
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, '#e0e0e0');
+    return gradient;
+  });
+
+  // Destroy previous chart instance if any (optional, depends if multiple renders)
+  if(window.statsChartInstance) {
+    window.statsChartInstance.destroy();
+  }
+
+  window.statsChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Users', 'Products', 'Subscribers', 'Revenue'],
+      datasets: [{
+        label: 'Count / $',
+        data: dataValues,
+        backgroundColor: baseColors,
+        borderRadius: 10,
+        borderSkipped: false,
+        maxBarThickness: 60,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.dataset.label || '';
+              return `${context.parsed.y} ${label === 'Count / $' ? '' : ''}`;
             }
           }
         }
-      });
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: Math.max(...dataValues) * 1.2, // some space above max
+          ticks: {
+            stepSize: Math.ceil(Math.max(...dataValues) / 5),
+          }
+        },
+        x: {
+          ticks: { color: '#555', font: { size: 14, weight: 'bold' } },
+          grid: { display: false }
+        }
+      }
     }
+  });
+}
 
     async function renderCharts() {
       await Promise.all([loadUsers(), loadProducts()]);
 
-      // Assume max numbers to normalize percentages on doughnuts
       const maxUsers = 1000;
       const maxProducts = 1000;
+      const maxSubscribers = 100;
+      const maxRevenue = 100;
 
       createCircleChart('usersChart', Math.min(100, Math.round((userCount / maxUsers) * 100)), '#4e73df', 'Users');
       createCircleChart('productsChart', Math.min(100, Math.round((productCount / maxProducts) * 100)), '#1cc88a', 'Products');
+      createCircleChart('subscribersChart', defaultSubscribers, '#36b9cc', 'Subscribers');
+      createCircleChart('revenueChart', defaultRevenuePercent, '#f6c23e', 'Revenue');
+
       renderStatsChart();
     }
 
