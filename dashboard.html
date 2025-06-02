@@ -219,7 +219,9 @@
     }
 
     async function renderCharts() {
-      await Promise.all([loadUsers(), loadProducts()]);
+      await loadUsers();
+      await loadProducts();
+
 
       const maxUsers = 1000;
       const maxProducts = 1000;
