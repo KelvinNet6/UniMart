@@ -499,10 +499,8 @@ function displayProducts(products, filter = "") {
   });
 }
 
-    
-
 async function loadTraders() {
-  const list = document.getElementById('trader-list');
+  const list = document.getElementById('traders-container');
   if (!list) return; // Prevents 'null' error if the element is missing
 
   try {
