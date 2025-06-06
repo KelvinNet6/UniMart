@@ -240,6 +240,29 @@
  background: #004182;
 }
 
+     #main-wrapper {
+      display: flex;
+      flex: 1;
+      padding: 20px;
+    }
+    #product-feed-wrapper {
+      flex: 3;
+    }
+    #random-traders {
+      flex: 1;
+      padding-left: 20px;
+      border-left: 1px solid #ccc;
+    }
+    .trader-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    .trader-card h4 {
+      margin: 0 0 5px;
+    }
 /* Mobile-first adjustments */
 @media (max-width: 600px) {
   #search-bar {
@@ -306,10 +329,17 @@
     <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
   </div>
 
-  <div id="welcome-message" style="display:none;"></div>
+ <div id="main-wrapper">
+    <!-- Product Feed -->
+    <div id="product-feed-wrapper">
+      <div id="product-feed"></div>
+    </div>
 
-  <div id="product-feed-wrapper">
-    <div id="product-feed"></div>
+    <!-- Sidebar for Random Traders -->
+    <aside id="random-traders">
+      <h3>Featured Traders</h3>
+      <div id="trader-list"></div>
+    </aside>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
