@@ -520,8 +520,7 @@ function displayProducts(products, filter = "") {
     // Infinite scroll
     window.addEventListener("scroll", () => {
       if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 300
-      ) {
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 ) {
         fetchMoreProducts();
       }
     });
@@ -533,11 +532,6 @@ function displayProducts(products, filter = "") {
     });
   };
   
-  window.addEventListener("scroll", () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    fetchMoreProducts();
-  }
-});
 
 </script>
 </body>
