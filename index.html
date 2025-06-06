@@ -636,7 +636,7 @@ async function loadTraders() {
   if (!list) return; // Prevents 'null' error if the element is missing
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('profiles')
       .select('id, username, bio, location, profile_image_url')
       .order('id', { ascending: false }) // optional: show latest
