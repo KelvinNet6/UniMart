@@ -499,6 +499,47 @@ function displayProducts(products, filter = "") {
   });
 }
 
+    
+
+async function loadTraders() {
+  const list = document.getElementById('trader-list');
+  if (!list) return; // Prevents 'null' error if the element is missing
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .select('id, username, bio, location, profile_image_url')
+      .order('id', { ascending: false }) // optional: show latest
+      .limit(10);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = '<p>No traders found.</p>';
+      return;
+    }
+
+    list.innerHTML = '';
+
+    data.forEach(trader => {
+      const div = document.createElement('div');
+      div.className = 'trader-card';
+      div.innerHTML = `
+        <h4>${trader.username}</h4>
+        <p>${trader.bio || 'No bio available.'}</p>
+        <small>${trader.location || 'Unknown location'}</small>
+      `;
+      list.appendChild(div);
+    });
+
+  } catch (err) {
+    console.error('Error loading traders:', err.message);
+    list.innerHTML = '<p>Error loading traders.</p>';
+  }
+}
+loadTraders();
+
+    document.addEventListener('DOMContentLoaded', loadTraders);
 
     async function updateUI() {
       const {
@@ -630,46 +671,6 @@ function displayProducts(products, filter = "") {
     });
   };
 
-async function loadTraders() {
-  const list = document.getElementById('trader-list');
-  if (!list) return; // Prevents 'null' error if the element is missing
-
-  try {
-    const { data, error } = await supabaseClient
-      .from('profiles')
-      .select('id, username, bio, location, profile_image_url')
-      .order('id', { ascending: false }) // optional: show latest
-      .limit(10);
-
-    if (error) throw error;
-
-    if (!data || data.length === 0) {
-      list.innerHTML = '<p>No traders found.</p>';
-      return;
-    }
-
-    list.innerHTML = '';
-
-    data.forEach(trader => {
-      const div = document.createElement('div');
-      div.className = 'trader-card';
-      div.innerHTML = `
-        <h4>${trader.username}</h4>
-        <p>${trader.bio || 'No bio available.'}</p>
-        <small>${trader.location || 'Unknown location'}</small>
-      `;
-      list.appendChild(div);
-    });
-
-  } catch (err) {
-    console.error('Error loading traders:', err.message);
-    list.innerHTML = '<p>Error loading traders.</p>';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', loadTraders);
-
-        
 </script>
 </body>
 </html>
