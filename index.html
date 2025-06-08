@@ -678,6 +678,15 @@ loadTraders();
     });
   };
 
+  window.onload = function () {
+  setTimeout(function () {
+    var message = document.getElementById("welcome-message");
+    if (message) {
+      message.style.display = "none";  // This hides the element after the animation
+    }
+  }, 3000);  // 3 seconds
+};
+
 </script>
 </body>
 </html>
