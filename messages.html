@@ -6,7 +6,7 @@
   <title>Messages</title>
   <style>
     :root {
-      --primary: #333;
+      --primary: #0a66c2;
       --bg: #f0f2f5;
       --text: #333;
     }
@@ -25,6 +25,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     nav a {
@@ -34,12 +35,13 @@
     }
 
     #nav-bar {
-      background: #444;
+      background: #0a66c2;
       padding: 0.5rem;
       display: flex;
       justify-content: center;
       gap: 1rem;
       margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
 
     #nav-bar a {
@@ -48,7 +50,6 @@
     }
 
     .messages-container {
-      flex: 1;
       max-width: 900px;
       margin: 2rem auto;
       background: white;
@@ -99,6 +100,154 @@
       color: #777;
       font-size: 1rem;
     }
+
+    #chat-widget {
+      position: fixed;
+      bottom: 0;
+      right: 20px;
+      width: 320px;
+      font-family: Arial, sans-serif;
+      z-index: 1000;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      transform: translateY(100%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--primary);
+      max-width: 90vw;
+    }
+
+    .slide-up {
+      animation: slide-up 0.3s ease-out forwards;
+    }
+
+    .slide-down {
+      animation: slide-down 0.3s ease-in forwards;
+    }
+
+    @keyframes slide-up {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slide-down {
+      to {
+        transform: translateY(100%);
+      }
+    }
+
+    #chat-header {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem;
+      font-weight: bold;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #slide-down-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    #chat-box {
+      background: white;
+      display: flex;
+      flex-direction: column;
+      max-height: 400px;
+      height: 350px;
+      border-top: 1px solid #ccc;
+    }
+
+    #chat-messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .chat-input-area {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-top: 1px solid #eee;
+      gap: 0.5rem;
+    }
+
+    .chat-input-area input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .chat-input-area button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.75rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .chat-input-area #emoji-button {
+      background: transparent;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    #chat-toggle {
+      position: fixed;
+      bottom: 10px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 999;
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      header, #nav-bar {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .messages-container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      .chat-input-area input {
+        font-size: 0.9rem;
+      }
+
+      .chat-input-area button {
+        font-size: 0.85rem;
+      }
+
+      #chat-widget {
+        right: 10px;
+        width: 95vw;
+        max-height: 90vh;
+      }
+    }
   </style>
 </head>
 <body>
@@ -116,35 +265,168 @@
 
 <div class="messages-container">
   <h2>Messages</h2>
-  <div id="messages-list">
-    <!-- Messages will be inserted here -->
+  <div id="messages-list"></div>
+</div>
+
+<!-- Chat Toggle Button -->
+<button id="chat-toggle">💬</button>
+
+<!-- Chat Widget -->
+<div id="chat-widget">
+  <div id="chat-header">
+    <span>Chat with <span id="chat-user-name">User</span></span>
+    <button id="slide-down-button">▼</button>
+  </div>
+  <div id="chat-box">
+    <div id="chat-messages"></div>
+    <div class="chat-input-area">
+      <button id="emoji-button">😊</button>
+      <input type="text" id="chat-input" placeholder="Type your message..."/>
+      <button id="send-button">Send</button>
+    </div>
   </div>
 </div>
 
-<script>
-  // Simulated messages data (replace with API or WebSocket data)
-  const messages = [
-    { id: 'user1', name: 'Jane Doe', lastMessage: 'Hey, still selling the tablet?', profilePic: 'https://via.placeholder.com/60' },
-    { id: 'user2', name: 'Mike Smith', lastMessage: 'Thanks for the headphones!', profilePic: 'https://via.placeholder.com/60' },
-    { id: 'user3', name: 'Emily Johnson', lastMessage: 'Can we meet tomorrow?', profilePic: 'https://via.placeholder.com/60' }
-  ];
+<script type="module">
+  import { supabase } from './supabase.js';
 
   const listContainer = document.getElementById('messages-list');
+  const chatUserName = document.getElementById('chat-user-name');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const sendButton = document.getElementById('send-button');
+  const emojiButton = document.getElementById('emoji-button');
+  const chatWidget = document.getElementById('chat-widget');
+  const slideDownButton = document.getElementById('slide-down-button');
+  const chatToggle = document.getElementById('chat-toggle');
 
-  messages.forEach(msg => {
-    const item = document.createElement('div');
-    item.className = 'message-item';
-    item.onclick = () => window.location.href = `chat.html?user=${msg.id}`;
-    item.innerHTML = `
-      <img src="${msg.profilePic}" alt="Profile Picture">
-      <div class="message-details">
-        <h4>${msg.name}</h4>
-        <p>${msg.lastMessage}</p>
-      </div>
-    `;
-    listContainer.appendChild(item);
+  let currentUserId = null;
+  let currentChatUser = null;
+  let currentChatId = null;
+
+  async function getUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      window.location.href = '/login.html';
+    } else {
+      currentUserId = user.id;
+      loadConversations();
+    }
+  }
+
+  async function loadConversations() {
+    const { data: messages, error } = await supabase
+      .from('messages')
+      .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading messages:', error);
+      return;
+    }
+
+    const uniqueUsers = new Map();
+
+    messages.forEach(msg => {
+      const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
+      if (!uniqueUsers.has(otherUser.id)) {
+        uniqueUsers.set(otherUser.id, {
+          ...otherUser,
+          lastMessage: msg.content
+        });
+      }
+    });
+
+    listContainer.innerHTML = '';
+    [...uniqueUsers.values()].forEach(user => {
+      const item = document.createElement('div');
+      item.className = 'message-item';
+      item.onclick = () => openChat(user);
+      item.innerHTML = `
+        <img src="${user.profile_pic || 'https://via.placeholder.com/60'}" alt="Profile Picture">
+        <div class="message-details">
+          <h4>${user.username}</h4>
+          <p>${user.lastMessage}</p>
+        </div>
+      `;
+      listContainer.appendChild(item);
+    });
+  }
+
+  async function openChat(user) {
+    currentChatUser = user;
+    currentChatId = [currentUserId, user.id].sort().join('-');
+    chatUserName.textContent = user.username;
+    chatWidget.classList.remove('slide-down');
+    chatWidget.classList.add('slide-up');
+    chatWidget.style.display = 'block';
+    chatToggle.style.display = 'none';
+    chatInput.value = '';
+    chatInput.focus();
+
+    const { data: messages, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('chat_id', currentChatId)
+      .order('created_at', { ascending: true });
+
+    chatMessages.innerHTML = '';
+    if (!error && messages.length) {
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.innerHTML = `<strong>${msg.sender_id === currentUserId ? 'You' : currentChatUser.username}:</strong> ${msg.content}`;
+        chatMessages.appendChild(div);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+
+  sendButton.addEventListener('click', async () => {
+    const msg = chatInput.value.trim();
+    if (msg === '') return;
+    const { error } = await supabase.from('messages').insert([{
+      chat_id: currentChatId,
+      sender_id: currentUserId,
+      receiver_id: currentChatUser.id,
+      content: msg
+    }]);
+    if (!error) {
+      const div = document.createElement('div');
+      div.innerHTML = `<strong>You:</strong> ${msg}`;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+    }
   });
+
+  emojiButton.addEventListener('click', () => {
+    chatInput.value += '😊';
+    chatInput.focus();
+  });
+
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendButton.click();
+  });
+
+  slideDownButton.addEventListener('click', () => {
+    chatWidget.classList.remove('slide-up');
+    chatWidget.classList.add('slide-down');
+    setTimeout(() => {
+      chatWidget.style.display = 'none';
+      chatToggle.style.display = 'block';
+    }, 300);
+  });
+
+  chatToggle.addEventListener('click', () => {
+    chatToggle.style.display = 'none';
+    chatWidget.classList.remove('slide-down');
+    chatWidget.classList.add('slide-up');
+    chatWidget.style.display = 'block';
+  });
+
+  getUser();
 </script>
+
 
 </body>
 </html>
