@@ -555,30 +555,37 @@ loadTraders();
       const user = session?.user;
 
       if (user) {
-        loginSection.style.display = "none";
-        registerSection.style.display = "none";
-        welcomeMessage.style.display = "block";
-        welcomeMessage.textContent = `Welcome, ${user.email}`;
-        feedWrapper.style.display = "block";
-        searchBar.style.display = "flex";
-        navBar.style.display = "flex";
-        profileLink.style.display = "inline";
-        logoutLink.style.display = "inline";
+         loginSection.style.display = "none";
+         registerSection.style.display = "none";
+         welcomeMessage.style.display = "block";
+         welcomeMessage.textContent = `Welcome, ${user.email}`;
 
-        feed.innerHTML = "";
-        allProducts = [];
-        page = 0;
-        await fetchMoreProducts();
-      } else {
-        loginSection.style.display = "flex";
-        registerSection.style.display = "none";
-        feedWrapper.style.display = "none";
+        // Make the welcome message disappear after 3 seconds
+        setTimeout(() => {
         welcomeMessage.style.display = "none";
-        searchBar.style.display = "none";
-        navBar.style.display = "none";
-        profileLink.style.display = "none";
-        logoutLink.style.display = "none";
-      }
+      }, 3000);
+
+      feedWrapper.style.display = "block";
+      searchBar.style.display = "flex";
+      navBar.style.display = "flex";
+      profileLink.style.display = "inline";
+      logoutLink.style.display = "inline";
+
+     feed.innerHTML = "";
+     allProducts = [];
+     page = 0;
+     await fetchMoreProducts();
+   } else {
+     loginSection.style.display = "flex";
+     registerSection.style.display = "none";
+     feedWrapper.style.display = "none";
+     welcomeMessage.style.display = "none";
+     searchBar.style.display = "none";
+     navBar.style.display = "none";
+     profileLink.style.display = "none";
+    logoutLink.style.display = "none";
+   }
+
     }
 
     loginBtn.addEventListener("click", async () => {
@@ -677,15 +684,6 @@ loadTraders();
       updateUI();
     });
   };
-
-  window.onload = function () {
-  setTimeout(function () {
-    var message = document.getElementById("welcome-message");
-    if (message) {
-      message.style.display = "none";  // This hides the element after the animation
-    }
-  }, 3000);  // 3 seconds
-};
 
 </script>
 </body>
