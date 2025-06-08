@@ -434,7 +434,7 @@ async function ensureProfile(userId) {
 
     try {
       const url = await uploadImage(file, 'cover_photos');
-      document.querySelector('.cover-photo').style.backgroundImage = url('${url}');
+     document.querySelector('.cover-photo').style.backgroundImage = `url('${url}')`;
 
       // Update profile cover_url in DB
       const { error } = await supabase
