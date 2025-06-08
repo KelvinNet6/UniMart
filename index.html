@@ -560,11 +560,13 @@ loadTraders();
          welcomeMessage.style.display = "block";
          welcomeMessage.textContent = `Welcome, ${user.email}`;
 
-        // Make the welcome message disappear after 3 seconds
         setTimeout(() => {
         welcomeMessage.style.display = "none";
       }, 5000);
 
+      document.getElementById('left-sidebar').style.display = "block"; 
+      document.getElementById('random-traders').style.display = "block"; 
+         
       feedWrapper.style.display = "block";
       searchBar.style.display = "flex";
       navBar.style.display = "flex";
@@ -583,7 +585,10 @@ loadTraders();
      searchBar.style.display = "none";
      navBar.style.display = "none";
      profileLink.style.display = "none";
-    logoutLink.style.display = "none";
+     logoutLink.style.display = "none";
+
+     document.getElementById('left-sidebar').style.display = "none"; 
+     document.getElementById('random-traders').style.display = "none"; 
    }
 
     }
