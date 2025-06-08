@@ -507,6 +507,8 @@ async function ensureProfile(userId) {
     alert('Please wait for user to load or log in again.');
     return;
   }
+
+     const profileId = currentUser.id;
     
     const name = document.getElementById('product-name').value.trim();
     const price = document.getElementById('product-price').value.trim();
