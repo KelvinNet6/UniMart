@@ -603,7 +603,13 @@ loadTraders();
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
       if (error) {
         alert("Login error: " + error.message);
+
+        resetPasswordBtn.style.display = "inline-block";
+        
       } else {
+
+        resetPasswordBtn.style.display = "none";
+        
         updateUI();
       }
     });
