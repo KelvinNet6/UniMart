@@ -552,7 +552,10 @@ async function ensureProfile(userId) {
       document.getElementById('product-category').value = '';
       document.getElementById('product-description').value = '';
       imageFileInput.value = '';
-      document.getElementById('preview-image').style.display = 'none';
+      
+      const previewImage = document.getElementById('preview-image');
+      if (previewImage) previewImage.style.display = 'none';
+      
       document.getElementById('product-modal').style.display = 'none';
 
     } catch (error) {
