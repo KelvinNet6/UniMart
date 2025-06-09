@@ -304,7 +304,10 @@ async function fetchUser() {
 
   currentUser = user;
 
-  // 🔐 Ensure 'users' table contains this user
+  const profileUserId = getUserIdFromUrl() || user.id; // 👈 detect if viewing someone else
+  const viewingOwnProfile = profileUserId === user.id;
+
+  // Insert user in 'users' table if not exists (only for logged-in user)
   const { data: existingUser, error: userCheckError } = await supabase
     .from('users')
     .select('id')
@@ -324,13 +327,19 @@ async function fetchUser() {
     }
   }
 
-  // ✅ Ensure profile exists
-  await ensureProfile(currentUser.id);
+  // Ensure profile exists for the logged-in user only
+  await ensureProfile(user.id);
 
-  loadUserProfile();
-  loadUserProducts();
+  if (!viewingOwnProfile) {
+    // Hide "Edit Profile" and "Add Product" buttons
+    document.getElementById('edit-profile-button')?.remove();
+    document.getElementById('add-product-button')?.remove();
+  }
+
+  // Load the correct profile and products
+  loadUserProfile(profileUserId);
+  loadUserProducts(profileUserId);
 }
-
 
 async function ensureProfile(userId) {
   const { data, error } = await supabase
@@ -352,52 +361,54 @@ async function ensureProfile(userId) {
   }
 }
 
-  async function loadUserProfile() {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', currentUser.id)
-      .single();
+ async function loadUserProfile(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
 
-    if (data) {
-      document.getElementById('display-name').textContent = data.username || 'Trader Name';
-      document.getElementById('display-location').textContent = data.location || '';
-      document.getElementById('display-bio').textContent = data.bio || '';
-      document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
+  if (data) {
+    document.getElementById('display-name').textContent = data.username || 'Trader Name';
+    document.getElementById('display-location').textContent = data.location || '';
+    document.getElementById('display-bio').textContent = data.bio || '';
+    document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
+
     if (data.cover_image_url) {
-       document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
-      }
+      document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
     }
   }
+}
 
-  async function loadUserProducts() {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('created_at', { ascending: false });
+async function loadUserProducts(userId) {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
 
-    const productGrid = document.getElementById('product-grid');
-    productGrid.innerHTML = '';
-    if (data && data.length > 0) {
-      data.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-       card.innerHTML = `
-       <img src="${product.image_url}" alt="${product.name}">
-       <div class="info">
-      <h3>${product.name}</h3>
-      <p>${product.price}</p>
-      <p>${product.category}</p>
-      <p>${product.description || ''}</p>
-      </div>
-    `;
-        productGrid.appendChild(card);
-      });
-    } else {
-      productGrid.innerHTML = '<p>No products yet.</p>';
-    }
+  const productGrid = document.getElementById('product-grid');
+  productGrid.innerHTML = '';
+
+  if (data && data.length > 0) {
+    data.forEach(product => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <img src="${product.image_url}" alt="${product.name}">
+        <div class="info">
+          <h3>${product.name}</h3>
+          <p>${product.price}</p>
+          <p>${product.category}</p>
+          <p>${product.description || ''}</p>
+        </div>
+      `;
+      productGrid.appendChild(card);
+    });
+  } else {
+    productGrid.innerHTML = '<p>No products yet.</p>';
   }
+}
 
  async function uploadImage(file, folder) {
   const fileExt = file.name.split('.').pop();
