@@ -305,102 +305,95 @@
   let currentChatId = null;
 
   async function getUser() {
-  const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-  if (!user) {
-    window.location.href = '/login.html'; // Or wherever you handle login
-    return;
-  }
-
-  currentUserId = user.id;
-  await loadConversations();
-
-  // 👇 Check for chat parameters in URL
-  const params = new URLSearchParams(window.location.search);
-  const targetUserId = params.get('user_id');
-  const targetUsername = params.get('user_name');
-  const productName = params.get('product_name');
-
-  if (targetUserId && targetUsername) {
-    // Optionally: fetch profile pic
-    let profilePic = 'https://via.placeholder.com/40';
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('profile_image_url')
-      .eq('id', targetUserId)
-      .single();
-
-    if (profile?.profile_image_url) {
-      profilePic = profile.profile_image_url;
+    if (!user) {
+      window.location.href = '/login.html';
+      return;
     }
 
-    // 👇 Open the chat directly
-    openChat({
-      id: targetUserId,
-      username: decodeURIComponent(targetUsername),
-      profile_pic: profilePic
-    });
+    currentUserId = user.id;
+    await loadConversations();
 
-    // Optional: pre-fill message input
-    const messageInput = document.getElementById('message-input');
-    if (messageInput && productName) {
-      messageInput.value = `Hi ${decodeURIComponent(targetUsername)}, I'm interested in your product: ${decodeURIComponent(productName)}.`;
-    }
+    const params = new URLSearchParams(window.location.search);
+    const targetUserId = params.get('user_id');
+    const targetUsername = params.get('user_name');
+    const productName = params.get('product_name');
 
-    // Optional: clean up URL
-    if (window.history.replaceState) {
-      window.history.replaceState({}, document.title, window.location.pathname);
+    if (targetUserId && targetUsername) {
+      let profilePic = 'https://via.placeholder.com/40';
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profile_image_url')
+        .eq('id', targetUserId)
+        .single();
+
+      if (profile?.profile_image_url) {
+        profilePic = profile.profile_image_url;
+      }
+
+      openChat({
+        id: targetUserId,
+        username: decodeURIComponent(targetUsername),
+        profile_pic: profilePic
+      });
+
+      // Pre-fill message
+      if (productName) {
+        chatInput.value = `Hi ${decodeURIComponent(targetUsername)}, I'm interested in your product: ${decodeURIComponent(productName)}.`;
+      }
+
+      // Clean URL
+      if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     }
   }
-}
-
 
   async function loadConversations() {
- const { data: messages, error } = await supabase
-  .from('messages')
-  .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
-  .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
-  .order('created_at', { ascending: false });
+    const { data: messages, error } = await supabase
+      .from('messages')
+      .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
+      .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+      .order('created_at', { ascending: false });
 
-if (error) {
-  console.error('Error loading messages:', error);
-  return;
-}
+    if (error) {
+      console.error('Error loading messages:', error);
+      return;
+    }
 
-const chatMap = new Map();
+    const chatMap = new Map();
 
-messages.forEach(msg => {
-  const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
-
-  if (!chatMap.has(msg.chat_id)) {
-    chatMap.set(msg.chat_id, {
-      ...otherUser,
-      chat_id: msg.chat_id,
-      lastMessage: msg.content,
-      lastTime: msg.created_at
+    messages.forEach(msg => {
+      const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
+      if (!chatMap.has(msg.chat_id)) {
+        chatMap.set(msg.chat_id, {
+          ...otherUser,
+          chat_id: msg.chat_id,
+          lastMessage: msg.content,
+          lastTime: msg.created_at
+        });
+      }
     });
+
+    listContainer.innerHTML = '';
+
+    [...chatMap.values()]
+      .sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime))
+      .forEach(user => {
+        const item = document.createElement('div');
+        item.className = 'message-item';
+        item.onclick = () => openChat(user);
+        item.innerHTML = `
+          <img src="${user.profile_pic || 'https://via.placeholder.com/60'}" alt="Profile Picture">
+          <div class="message-details">
+            <h4>${user.username}</h4>
+            <p>${user.lastMessage}</p>
+          </div>
+        `;
+        listContainer.appendChild(item);
+      });
   }
-});
-
-
-  listContainer.innerHTML = '';
-
-[...chatMap.values()]
-  .sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime))
-  .forEach(user => {
-    const item = document.createElement('div');
-    item.className = 'message-item';
-    item.onclick = () => openChat(user);
-    item.innerHTML = `
-      <img src="${user.profile_pic || 'https://via.placeholder.com/60'}" alt="Profile Picture">
-      <div class="message-details">
-        <h4>${user.username}</h4>
-        <p>${user.lastMessage}</p>
-      </div>
-    `;
-    listContainer.appendChild(item);
-  });
-
 
   async function openChat(user) {
     currentChatUser = user;
@@ -430,31 +423,35 @@ messages.forEach(msg => {
     }
   }
 
-  sendButton.addEventListener('click', async () => {
-    const msg = chatInput.value.trim();
-    if (msg === '') return;
+  async function sendMessage(content) {
     const { error } = await supabase.from('messages').insert([{
       chat_id: currentChatId,
       sender_id: currentUserId,
       receiver_id: currentChatUser.id,
-      content: msg
+      content: content
     }]);
+
     if (!error) {
       const div = document.createElement('div');
-      div.innerHTML = `<strong>You:</strong> ${msg}`;
+      div.innerHTML = `<strong>You:</strong> ${content}`;
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
       chatInput.value = '';
     }
+  }
+
+  sendButton.addEventListener('click', () => {
+    const msg = chatInput.value.trim();
+    if (msg !== '') sendMessage(msg);
+  });
+
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendButton.click();
   });
 
   emojiButton.addEventListener('click', () => {
     chatInput.value += '😊';
     chatInput.focus();
-  });
-
-  chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') sendButton.click();
   });
 
   slideDownButton.addEventListener('click', () => {
@@ -473,48 +470,21 @@ messages.forEach(msg => {
     chatWidget.style.display = 'block';
   });
 
-  function getQueryParams() {
-  const params = new URLSearchParams(window.location.search);
-  return {
-    user_id: params.get('user_id'),
-    user_name: params.get('user_name'),
-    product_name: params.get('product_name'),
-  };
-}
+  // Real-time updates
+  supabase
+    .channel('realtime:messages')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
+      const chatId = payload.new.chat_id;
+      if (chatId === currentChatId) {
+        openChat(currentChatUser);
+      }
+      loadConversations();
+    })
+    .subscribe();
 
-async function handleChatIntentFromProductPage() {
-  const { user_id, user_name, product_name } = getQueryParams();
-
-  if (user_id && user_name) {
-    // Fetch full user profile for chat (e.g., profile_pic)
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('id, username, profile_pic')
-      .eq('id', user_id)
-      .single();
-
-    if (profile && !error) {
-      openChat({
-        ...profile,
-        lastMessage: product_name
-          ? `Hi ${profile.username}, I'm interested in your "${product_name}".`
-          : `Hi ${profile.username}, I'm interested in your items.`,
-      });
-
-      sendMessage(`Hi ${profile.username}, I'm interested in your "${product_name}".`);
-    }
-  }
-}
-    supabase
-  .channel('realtime:messages')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
-    loadConversations(); // Or openChat() if viewing a thread
-  })
-  .subscribe();
-
-getUser().then(handleChatIntentFromProductPage);
-  
+  getUser();
 </script>
+
 
 
 </body>
