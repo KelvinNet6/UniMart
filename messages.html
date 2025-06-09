@@ -425,6 +425,42 @@
   });
 
   getUser();
+
+  function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    user_id: params.get('user_id'),
+    user_name: params.get('user_name'),
+    product_name: params.get('product_name'),
+  };
+}
+
+async function handleChatIntentFromProductPage() {
+  const { user_id, user_name, product_name } = getQueryParams();
+
+  if (user_id && user_name) {
+    // Fetch full user profile for chat (e.g., profile_pic)
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('id, username, profile_pic')
+      .eq('id', user_id)
+      .single();
+
+    if (profile && !error) {
+      openChat({
+        ...profile,
+        lastMessage: product_name
+          ? `Hi ${profile.username}, I'm interested in your "${product_name}".`
+          : `Hi ${profile.username}, I'm interested in your items.`,
+      });
+
+      sendMessage(`Hi ${profile.username}, I'm interested in your "${product_name}".`);
+    }
+  }
+}
+  
+getUser().then(handleChatIntentFromProductPage);
+  
 </script>
 
 
