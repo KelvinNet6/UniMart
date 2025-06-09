@@ -305,14 +305,55 @@
   let currentChatId = null;
 
   async function getUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      window.location.href = '/messages.html';
-    } else {
-      currentUserId = user.id;
-      loadConversations();
+  const { data: { user }, error } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = '/login.html'; // Or wherever you handle login
+    return;
+  }
+
+  currentUserId = user.id;
+  await loadConversations();
+
+  // 👇 Check for chat parameters in URL
+  const params = new URLSearchParams(window.location.search);
+  const targetUserId = params.get('user_id');
+  const targetUsername = params.get('user_name');
+  const productName = params.get('product_name');
+
+  if (targetUserId && targetUsername) {
+    // Optionally: fetch profile pic
+    let profilePic = 'https://via.placeholder.com/40';
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('profile_image_url')
+      .eq('id', targetUserId)
+      .single();
+
+    if (profile?.profile_image_url) {
+      profilePic = profile.profile_image_url;
+    }
+
+    // 👇 Open the chat directly
+    openChat({
+      id: targetUserId,
+      username: decodeURIComponent(targetUsername),
+      profile_pic: profilePic
+    });
+
+    // Optional: pre-fill message input
+    const messageInput = document.getElementById('message-input');
+    if (messageInput && productName) {
+      messageInput.value = `Hi ${decodeURIComponent(targetUsername)}, I'm interested in your product: ${decodeURIComponent(productName)}.`;
+    }
+
+    // Optional: clean up URL
+    if (window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }
+}
+
 
   async function loadConversations() {
     const { data: messages, error } = await supabase
