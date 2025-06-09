@@ -356,43 +356,54 @@
 
 
   async function loadConversations() {
-    const { data: messages, error } = await supabase
-      .from('messages')
-      .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
-      .order('created_at', { ascending: false });
+  const { data: messages, error } = await supabase
+    .from('messages')
+    .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
+    .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error loading messages:', error);
-      return;
-    }
-
-    const uniqueUsers = new Map();
-
-    messages.forEach(msg => {
-      const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
-      if (!uniqueUsers.has(otherUser.id)) {
-        uniqueUsers.set(otherUser.id, {
-          ...otherUser,
-          lastMessage: msg.content
-        });
-      }
-    });
-
-    listContainer.innerHTML = '';
-    [...uniqueUsers.values()].forEach(user => {
-      const item = document.createElement('div');
-      item.className = 'message-item';
-      item.onclick = () => openChat(user);
-      item.innerHTML = `
-        <img src="${user.profile_pic || 'https://via.placeholder.com/60'}" alt="Profile Picture">
-        <div class="message-details">
-          <h4>${user.username}</h4>
-          <p>${user.lastMessage}</p>
-        </div>
-      `;
-      listContainer.appendChild(item);
-    });
+  if (error) {
+    console.error('Error loading messages:', error);
+    return;
   }
+
+  const uniqueConversations = new Map();
+
+  messages.forEach(msg => {
+    const isSender = msg.sender.id === currentUserId;
+    const otherUser = isSender ? msg.receiver : msg.sender;
+
+    // Only store the latest message per conversation with this user
+    if (!uniqueConversations.has(otherUser.id)) {
+      uniqueConversations.set(otherUser.id, {
+        ...otherUser,
+        lastMessage: msg.content,
+        lastTime: msg.created_at
+      });
+    }
+  });
+
+  listContainer.innerHTML = '';
+
+  // Sort conversations by most recent message
+  const sortedConversations = [...uniqueConversations.values()].sort((a, b) =>
+    new Date(b.lastTime) - new Date(a.lastTime)
+  );
+
+  sortedConversations.forEach(user => {
+    const item = document.createElement('div');
+    item.className = 'message-item';
+    item.onclick = () => openChat(user);
+    item.innerHTML = `
+      <img src="${user.profile_pic || 'https://via.placeholder.com/60'}" alt="Profile Picture">
+      <div class="message-details">
+        <h4>${user.username}</h4>
+        <p>${user.lastMessage}</p>
+      </div>
+    `;
+    listContainer.appendChild(item);
+  });
+}
+
 
   async function openChat(user) {
     currentChatUser = user;
