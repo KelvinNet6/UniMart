@@ -352,10 +352,18 @@
 
   async function loadConversations() {
     const { data: messages, error } = await supabase
-      .from('messages')
-      .select('*, sender:sender_id (id, username, profile_pic), receiver:receiver_id (id, username, profile_pic)')
-      .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
-      .order('created_at', { ascending: false });
+  .from('messages')
+  .select(`
+    *,
+    sender:profiles!messages_sender_id_fkey (
+      id, username, profile_pic
+    ),
+    receiver:profiles!messages_receiver_id_fkey (
+      id, username, profile_pic
+    )
+  `)
+  .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+  .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error loading messages:', error);
