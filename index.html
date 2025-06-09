@@ -497,18 +497,41 @@ function displayProducts(products, filter = "") {
   filtered.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("product-card");
-   card.innerHTML = `
+
+  card.innerHTML = `
   <img src="${p.image_url}" alt="${p.name}" />
   <div class="info">
     <h3>${p.name}</h3>
     <p>Price: ${p.price}</p>
     <p class="posted-by">Listed by ${p.user}</p>
     <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
+    <a 
+      href="messages.html?user_id=${p.user_id}&user_name=${encodeURIComponent(p.user)}&product_name=${encodeURIComponent(p.name)}"
+      class="shop-button"
+    >💬 Message Trader</a>
   </div>
-  `;
+`;
+
     feed.appendChild(card);
   });
+
+  // Add click listeners for the message buttons
+  document.querySelectorAll(".message-trader-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      const userId = button.dataset.userId;
+      const userName = button.dataset.userName;
+      const productName = button.dataset.productName;
+
+      openChat({
+        id: userId,
+        name: userName,
+        lastMessage: `Hi, I'm interested in your "${productName}".`,
+        productName: productName
+      });
+    });
+  });
 }
+
 
 async function loadTraders() {
   const list = document.getElementById('traders-container');
