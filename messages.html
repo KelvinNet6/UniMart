@@ -362,35 +362,32 @@
   .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
   .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error loading messages:', error);
-    return;
+if (error) {
+  console.error('Error loading messages:', error);
+  return;
+}
+
+const chatMap = new Map();
+
+messages.forEach(msg => {
+  const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
+
+  if (!chatMap.has(msg.chat_id)) {
+    chatMap.set(msg.chat_id, {
+      ...otherUser,
+      chat_id: msg.chat_id,
+      lastMessage: msg.content,
+      lastTime: msg.created_at
+    });
   }
+});
 
-  const uniqueConversations = new Map();
-
-  messages.forEach(msg => {
-    const isSender = msg.sender.id === currentUserId;
-   const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
-
-    // Only store the latest message per conversation with this user
-    if (!uniqueConversations.has(otherUser.id)) {
-      uniqueConversations.set(otherUser.id, {
-        ...otherUser,
-        lastMessage: msg.content,
-        lastTime: msg.created_at
-      });
-    }
-  });
 
   listContainer.innerHTML = '';
 
-  // Sort conversations by most recent message
-  const sortedConversations = [...uniqueConversations.values()].sort((a, b) =>
-    new Date(b.lastTime) - new Date(a.lastTime)
-  );
-
-  sortedConversations.forEach(user => {
+[...chatMap.values()]
+  .sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime))
+  .forEach(user => {
     const item = document.createElement('div');
     item.className = 'message-item';
     item.onclick = () => openChat(user);
@@ -403,7 +400,6 @@
     `;
     listContainer.appendChild(item);
   });
-}
 
 
   async function openChat(user) {
@@ -477,8 +473,6 @@
     chatWidget.style.display = 'block';
   });
 
-  getUser();
-
   function getQueryParams() {
   const params = new URLSearchParams(window.location.search);
   return {
@@ -511,7 +505,13 @@ async function handleChatIntentFromProductPage() {
     }
   }
 }
-  
+    supabase
+  .channel('realtime:messages')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
+    loadConversations(); // Or openChat() if viewing a thread
+  })
+  .subscribe();
+
 getUser().then(handleChatIntentFromProductPage);
   
 </script>
