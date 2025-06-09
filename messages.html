@@ -351,15 +351,16 @@
   }
 
   async function loadConversations() {
- const { data: messages, error } = await supabase
+    
+  const { data: messages, error } = await supabase
   .from('messages')
   .select(`
     *,
     sender:profiles!messages_sender_id_fkey (
-      id, username, profile_pic
+      id, username, profile_image_url
     ),
     receiver:profiles!messages_receiver_id_fkey (
-      id, username, profile_pic
+      id, username, profile_image_url
     )
   `)
   .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
