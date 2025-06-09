@@ -371,7 +371,7 @@
 
   messages.forEach(msg => {
     const isSender = msg.sender.id === currentUserId;
-    const otherUser = isSender ? msg.receiver : msg.sender;
+   const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
 
     // Only store the latest message per conversation with this user
     if (!uniqueConversations.has(otherUser.id)) {
