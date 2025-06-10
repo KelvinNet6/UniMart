@@ -242,9 +242,12 @@
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
       <button class="edit-btn" id="edit-profile-button" onclick="goToEdit()">Edit Profile</button>
       <div class="message-icon-wrapper">
-        <a href="messages.html">
-          <button class="message-icon" title="Go to inbox">💬</button>
+        <!-- Only for OWN profile -->
+        <a id="inbox-button" href="messages.html">
+        <button class="message-icon" title="Go to inbox">💬</button>
         </a>
+        <!-- Only for OTHER traders -->
+        <a id="message-trader-btn" href="#" class="shop-button hidden">💬 Message Trader</a>
         <span class="message-icon-badge"></span>
       </div>
       <button class="edit-btn" id="add-product-button" onclick="openModal()">+ Add Product</button>
@@ -334,12 +337,19 @@ async function fetchUser() {
   // Ensure profile exists for the logged-in user only
   await ensureProfile(user.id);
 
-  if (!viewingOwnProfile) {
+
+if (viewingOwnProfile) {
+  // Show inbox button, hide message button
+  document.getElementById('inbox-button')?.classList.remove('hidden');
+  document.getElementById('message-trader-btn')?.classList.add('hidden');
+   } else {
     document.getElementById('edit-profile-button')?.classList.add('hidden');
     document.getElementById('add-product-button')?.classList.add('hidden');
     document.getElementById('edit-header-button')?.classList.add('hidden');
-  }
-
+  // Hide inbox icon, show message trader button
+    document.getElementById('inbox-button')?.classList.add('hidden');
+    document.getElementById('message-trader-btn')?.classList.remove('hidden');
+}
   // Load the correct profile and products
   loadUserProfile(profileUserId);
   loadUserProducts(profileUserId);
