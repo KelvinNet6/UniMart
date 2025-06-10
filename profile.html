@@ -223,7 +223,7 @@
 <!-- Cover Photo -->
 <div class="cover-photo" id="cover-photo">
   <div class="cover-upload-wrapper">
-    <label for="cover-upload">+Header</label>
+    <label for="cover-upload" id="edit-header-button">+Header</label>
     <input type="file" id="cover-upload" accept="image/*">
   </div>
 </div>
@@ -240,14 +240,14 @@
       </div>
     </div>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-      <button class="edit-btn" onclick="goToEdit()">Edit Profile</button>
+      <button class="edit-btn" id="edit-profile-button" onclick="goToEdit()">Edit Profile</button>
       <div class="message-icon-wrapper">
         <a href="messages.html">
           <button class="message-icon" title="Go to inbox">💬</button>
         </a>
         <span class="message-icon-badge"></span>
       </div>
-      <button class="edit-btn" onclick="openModal()">+ Add Product</button>
+      <button class="edit-btn" id="add-product-button" onclick="openModal()">+ Add Product</button>
     </div>
   </div>
    <br>
@@ -337,6 +337,7 @@ async function fetchUser() {
   if (!viewingOwnProfile) {
     document.getElementById('edit-profile-button')?.classList.add('hidden');
     document.getElementById('add-product-button')?.classList.add('hidden');
+    document.getElementById('edit-header-button')?.classList.add('hidden');
   }
 
   // Load the correct profile and products
