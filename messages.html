@@ -167,13 +167,55 @@
       border-top: 1px solid #ccc;
     }
 
-    #chat-messages {
-      flex: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      font-size: 0.95rem;
-      color: #333;
-    }
+   /* Bubble message layout */
+#chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Shared message block */
+.message {
+  display: flex;
+  max-width: 80%;
+}
+
+/* Sent messages align right */
+.message.sent {
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+/* Received messages align left */
+.message.received {
+  align-self: flex-start;
+  justify-content: flex-start;
+}
+
+/* The message bubble */
+.bubble {
+  padding: 0.6rem 0.9rem;
+  border-radius: 18px;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Sent message bubble */
+.sent .bubble {
+  background-color: var(--primary);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+/* Received message bubble */
+.received .bubble {
+  background-color: #f1f1f1;
+  color: #333;
+  border-bottom-left-radius: 4px;
+}
+
 
     .chat-input-area {
       display: flex;
@@ -421,17 +463,20 @@
       .eq('chat_id', currentChatId)
       .order('created_at', { ascending: true });
 
-    chatMessages.innerHTML = '';
-    if (!error && messages.length) {
+   chatMessages.innerHTML = '';
+      if (!error && messages.length) {
       messages.forEach(msg => {
-        const div = document.createElement('div');
-        div.innerHTML = `<strong>${msg.sender_id === currentUserId ? 'You' : currentChatUser.username}:</strong> ${msg.content}`;
-        chatMessages.appendChild(div);
+      const div = document.createElement('div');
+      div.classList.add('message', msg.sender_id === currentUserId ? 'sent' : 'received');
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      bubble.textContent = msg.content;
+      div.appendChild(bubble);
+      chatMessages.appendChild(div);
       });
       chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
   }
-
+}
   async function sendMessage(content) {
     const { error } = await supabase.from('messages').insert([{
       chat_id: currentChatId,
@@ -441,13 +486,17 @@
     }]);
 
     if (!error) {
-      const div = document.createElement('div');
-      div.innerHTML = `<strong>You:</strong> ${content}`;
-      chatMessages.appendChild(div);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      chatInput.value = '';
-    }
-  }
+  const div = document.createElement('div');
+  div.classList.add('message', 'sent');
+  const bubble = document.createElement('div');
+  bubble.classList.add('bubble');
+  bubble.textContent = content;
+  div.appendChild(bubble);
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatInput.value = '';
+ }
+}
 
   sendButton.addEventListener('click', () => {
     const msg = chatInput.value.trim();
@@ -493,8 +542,5 @@
 
   getUser();
 </script>
-
-
-
 </body>
 </html>
