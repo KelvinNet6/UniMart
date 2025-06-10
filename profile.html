@@ -616,13 +616,14 @@ window.saveProfile = async function() {
     return;
   }
 
-  document.getElementById('edit-profile-modal').style.display = 'none';
-  loadUserProfile(); // Refresh displayed info
-};
+      document.getElementById('edit-profile-modal').style.display = 'none';
+      loadUserProfile(); // Refresh displayed info
+ };
 
 
-  // On page load
+  window.onload = () => {
   fetchUser();
+ };
 
   window.addProduct = addProduct;
 
