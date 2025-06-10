@@ -212,6 +212,10 @@
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       }
     }
+
+    .hidden {
+      display: none !important;
+   }
   </style>
 </head>
 <body>
@@ -331,9 +335,8 @@ async function fetchUser() {
   await ensureProfile(user.id);
 
   if (!viewingOwnProfile) {
-    // Hide "Edit Profile" and "Add Product" buttons
-    document.getElementById('edit-profile-button')?.remove();
-    document.getElementById('add-product-button')?.remove();
+    document.getElementById('edit-profile-button')?.classList.add('hidden');
+    document.getElementById('add-product-button')?.classList.add('hidden');
   }
 
   // Load the correct profile and products
@@ -362,7 +365,7 @@ async function ensureProfile(userId) {
 }
 
  async function loadUserProfile(userId) {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', userId)
@@ -377,11 +380,16 @@ async function ensureProfile(userId) {
     if (data.cover_image_url) {
       document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
     }
+
+    // Store profile username for Message button
+    document.getElementById('message-trader-btn')?.setAttribute('href',
+      `messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}`
+    );
   }
 }
 
 async function loadUserProducts(userId) {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('products')
     .select('*')
     .eq('user_id', userId)
