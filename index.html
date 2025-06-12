@@ -557,9 +557,9 @@ async function loadTraders() {
       const div = document.createElement('div');
       div.className = 'trader-card';
       div.innerHTML = `
-        <h4>${trader.username}</h4>
-        <p>${trader.bio || 'No bio available.'}</p>
-        <small>${trader.location || 'Unknown location'}</small>
+      <h4><a href="/profile.html?user_id=${trader.id}" class="trader-link">${trader.username}</a></h4>
+      <p>${trader.bio || 'No bio available.'}</p>
+      <small>${trader.location || 'Unknown location'}</small>
       `;
       list.appendChild(div);
     });
