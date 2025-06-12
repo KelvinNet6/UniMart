@@ -159,19 +159,23 @@
     }
 
     #chat-box {
-      background: white;
-      display: flex;
-      flex-direction: column;
-      max-height: 400px;
-      height: 350px;
-      border-top: 1px solid #ccc;
-    }
+  background: white;
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  height: 350px;
+  border-top: 1px solid #ccc;
+  overflow: hidden; /* Prevent layout breaking */
+}
 
-   /* Bubble message layout */
 #chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-height: 0;
 }
 
 /* Shared message block */
