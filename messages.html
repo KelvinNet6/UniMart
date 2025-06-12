@@ -422,12 +422,13 @@
     messages.forEach(msg => {
       const otherUser = msg.sender.id === currentUserId ? msg.receiver : msg.sender;
       if (!chatMap.has(msg.chat_id)) {
-        chatMap.set(msg.chat_id, {
+       chatMap.set(msg.chat_id, {
           ...otherUser,
-          chat_id: msg.chat_id,
-          lastMessage: msg.content,
-          lastTime: msg.created_at
-        });
+         profile_pic: otherUser.profile_image_url, 
+         chat_id: msg.chat_id,
+         lastMessage: msg.content,
+         lastTime: msg.created_at
+       });
       }
     });
 
