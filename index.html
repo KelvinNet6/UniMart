@@ -409,7 +409,7 @@
    <aside id="left-sidebar">
       <h3>Menu</h3>
       <ul>
-        <li><a href="/messages.html" id="nav-message-link">Messages <span id="message-badge" class="badge" style="display:none;">0</span></a></li>
+        <li><a href="messages.html" id="nav-message-link">Messages <span id="message-badge" class="badge" style="display:none;">0</span></a></li>
         <li><a href="#">Trades Requests</a></li>
         <li><a href="dashboard.html">Trade Overview</a></li>
       </ul>
@@ -457,6 +457,7 @@
     const resetPasswordBtn = document.getElementById("reset-password-btn");
 
     let allProducts = [];
+    let currentUserId = null;
     let page = 0;
     const pageSize = 10;
     let isLoading = false;
@@ -587,13 +588,14 @@ loadTraders();
       const user = session?.user;
 
       if (user) {
+         currentUserId = user.id; 
          loginSection.style.display = "none";
          registerSection.style.display = "none";
          welcomeMessage.style.display = "block";
          welcomeMessage.textContent = `Welcome, ${user.email}`;
 
-        setTimeout(() => {
-        welcomeMessage.style.display = "none";
+         setTimeout(() => {
+         welcomeMessage.style.display = "none";
       }, 5000);
 
       document.getElementById('left-sidebar').style.display = "block"; 
