@@ -534,6 +534,10 @@
     const showLogin = document.getElementById("show-login");
     const googleLoginBtn = document.getElementById("google-login-btn");
     const resetPasswordBtn = document.getElementById("reset-password-btn");
+    const openMenuBtn = document.getElementById("open-menu");
+    const openTradersBtn = document.getElementById("open-traders");
+    const menuPanel = document.getElementById("mobile-menu-panel");
+    const tradersPanel = document.getElementById("mobile-traders-panel");
 
     let allProducts = [];
     let currentUserId = null;
@@ -843,11 +847,7 @@ if (window.location.pathname.includes('messages.html')) {
   if (badge) badge.style.display = 'none';
 }
 
-  const openMenuBtn = document.getElementById("open-menu");
-  const openTradersBtn = document.getElementById("open-traders");
-  const menuPanel = document.getElementById("mobile-menu-panel");
-  const tradersPanel = document.getElementById("mobile-traders-panel");
-
+  //========
   openMenuBtn.addEventListener("click", () => {
     menuPanel.classList.add("show");
   });
