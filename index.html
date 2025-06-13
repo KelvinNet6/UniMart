@@ -507,13 +507,14 @@
   <button class="close-btn" onclick="closePanels()">✕</button>
   <div id="random-traders"> <!-- Move original traders content here --> </div>
 </aside>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-  window.onload = () => {
-    const supabaseClient = supabase.createClient(
-      "https://honrgtrvzpymssmlbcbn.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
-    );
+  
+ <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+  const supabase = createClient(
+    "https://honrgtrvzpymssmlbcbn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
+  );
 
     const feedWrapper = document.getElementById("product-feed-wrapper");
     const feed = document.getElementById("product-feed");
