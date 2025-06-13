@@ -278,11 +278,58 @@
     <input type="text" id="product-price" placeholder="Price (e.g. $20)" required />
     <input type="file" id="product-image" accept="image/*" onchange="previewImage(event)" required />
     <select id="product-category">
-      <option value="">Select Category</option>
-      <option value="Clothing">Clothing</option>
-      <option value="Accessories">Accessories</option>
-      <option value="Footwear">Footwear</option>
-    </select>
+  <option value="">Select Category</option>
+
+  <optgroup label="Technology">
+    <option value="Laptops">Laptops</option>
+    <option value="Mobile Phones">Mobile Phones</option>
+    <option value="Tablets">Tablets</option>
+    <option value="Smartwatches">Smartwatches</option>
+    <option value="Gaming Consoles">Gaming Consoles</option>
+    <option value="Headphones & Earbuds">Headphones & Earbuds</option>
+    <option value="Computer Accessories">Computer Accessories</option>
+    <option value="Monitors & Screens">Monitors & Screens</option>
+    <option value="Networking Devices">Networking Devices</option>
+    <option value="Storage Devices">Storage Devices</option>
+    <option value="Printers & Scanners">Printers & Scanners</option>
+    <option value="Software & Licenses">Software & Licenses</option>
+    <option value="Tech Gadgets">Tech Gadgets</option>
+    <option value="Drones & Cameras">Drones & Cameras</option>
+    <option value="Smart Home Devices">Smart Home Devices</option>
+  </optgroup>
+
+  <optgroup label="Fashion">
+    <option value="Clothing">Clothing</option>
+    <option value="Footwear">Footwear</option>
+    <option value="Accessories">Accessories</option>
+    <option value="Bags">Bags</option>
+    <option value="Jewelry">Jewelry</option>
+    <option value="Watches">Watches</option>
+  </optgroup>
+
+  <optgroup label="Home & Living">
+    <option value="Furniture">Furniture</option>
+    <option value="Home Decor">Home Decor</option>
+    <option value="Kitchen Appliances">Kitchen Appliances</option>
+    <option value="Lighting">Lighting</option>
+  </optgroup>
+
+  <optgroup label="Services">
+    <option value="Repair Services">Repair Services</option>
+    <option value="Tech Support">Tech Support</option>
+    <option value="Delivery Services">Delivery Services</option>
+    <option value="Freelance Work">Freelance Work</option>
+  </optgroup>
+
+  <optgroup label="Miscellaneous">
+    <option value="Books & Stationery">Books & Stationery</option>
+    <option value="Toys & Games">Toys & Games</option>
+    <option value="Sports Equipment">Sports Equipment</option>
+    <option value="Health & Beauty">Health & Beauty</option>
+    <option value="Collectibles">Collectibles</option>
+  </optgroup>
+</select>
+
     <textarea id="product-description" placeholder="Description" rows="3"></textarea>
     <img id="preview-image" src="#" alt="Image Preview" />
     <button onclick="addProduct()">Add Product</button>
