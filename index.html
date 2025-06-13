@@ -820,7 +820,7 @@ function incrementBadge() {
 
 const messageBadge = document.getElementById('message-badge');
 
-supabase
+supabaseClient
   .channel('realtime:messages')
   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
     const newMessage = payload.new;
