@@ -354,7 +354,69 @@
   vertical-align: top;
   margin-left: 4px;
 }
-    </style>
+
+    /* Mobile controls (shown only on small screens) */
+#mobile-controls {
+  display: none;
+  justify-content: space-between;
+  background: #0a66c2;
+  padding: 0.5rem;
+}
+#mobile-controls button {
+  background: white;
+  border: none;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Hide sidebars on mobile and use overlays instead */
+.side-panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 80%;
+  background: white;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.side-panel.right {
+  right: 0;
+  left: auto;
+  transform: translateX(100%);
+}
+.side-panel.show {
+  transform: translateX(0);
+}
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  padding: 1rem;
+  float: right;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  #left-sidebar,
+  #random-traders {
+    display: none !important;
+  }
+
+  #mobile-controls {
+    display: flex;
+  }
+
+  #product-feed-wrapper {
+    max-width: 100%;
+    flex: 1;
+  }
+}
+</style>
 </head>
 <body>
   <header>
@@ -365,6 +427,12 @@
     </nav>
   </header>
 
+<!-- Add this below your header for mobile controls -->
+<div id="mobile-controls" class="mobile-only">
+  <button id="open-menu">☰ Menu</button>
+  <button id="open-traders">👤 Traders</button>
+</div>
+  
   <div id="nav-bar" style="display:none;">
     <a href="index.html" id="home-link">Mart Feeds</a>
   </div>
@@ -428,7 +496,18 @@
       </div>
     </aside>
   </div>
-  
+  <!-- Left Sidebar Menu Panel -->
+<aside id="mobile-menu-panel" class="side-panel left">
+  <button class="close-btn" onclick="closePanels()">✕</button>
+  <div id="left-sidebar"> <!-- Move original menu content here --> </div>
+</aside>
+
+<!-- Right Sidebar Traders Panel -->
+<aside id="mobile-traders-panel" class="side-panel right">
+  <button class="close-btn" onclick="closePanels()">✕</button>
+  <div id="random-traders"> <!-- Move original traders content here --> </div>
+</aside>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
 <script>
@@ -764,7 +843,23 @@ if (window.location.pathname.includes('messages.html')) {
   if (badge) badge.style.display = 'none';
 }
 
-  
+  const openMenuBtn = document.getElementById("open-menu");
+  const openTradersBtn = document.getElementById("open-traders");
+  const menuPanel = document.getElementById("mobile-menu-panel");
+  const tradersPanel = document.getElementById("mobile-traders-panel");
+
+  openMenuBtn.addEventListener("click", () => {
+    menuPanel.classList.add("show");
+  });
+
+  openTradersBtn.addEventListener("click", () => {
+    tradersPanel.classList.add("show");
+  });
+
+  function closePanels() {
+    menuPanel.classList.remove("show");
+    tradersPanel.classList.remove("show");
+  }
 </script>
 </body>
 </html>
