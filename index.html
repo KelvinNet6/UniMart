@@ -416,6 +416,9 @@
     flex: 1;
   }
 }
+  #open-menu, #open-traders {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -680,6 +683,8 @@ loadTraders();
 
       document.getElementById('left-sidebar').style.display = "block"; 
       document.getElementById('random-traders').style.display = "block"; 
+      document.getElementById('open-menu').style.display = 'inline-block';
+      document.getElementById('open-traders').style.display = 'inline-block';
          
       feedWrapper.style.display = "block";
       searchBar.style.display = "flex";
@@ -703,6 +708,8 @@ loadTraders();
 
      document.getElementById('left-sidebar').style.display = "none"; 
      document.getElementById('random-traders').style.display = "none"; 
+     document.getElementById('open-menu').style.display = 'none';
+     document.getElementById('open-traders').style.display = 'none';
    }
 
     }
