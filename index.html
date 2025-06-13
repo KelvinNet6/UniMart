@@ -808,7 +808,6 @@ loadTraders();
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       updateUI();
     });
-  };
 
   // Ensure this runs after currentUserId is set in getUser()
 function incrementBadge() {
