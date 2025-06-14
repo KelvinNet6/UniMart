@@ -218,6 +218,30 @@
     .hidden {
       display: none !important;
    }
+
+    .carousel {
+  position: relative;
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+}
+.carousel img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.carousel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.carousel .prev { left: 10px; }
+.carousel .next { right: 10px; }
   </style>
 </head>
 <body>
@@ -276,7 +300,7 @@
     <h2>Add Product</h2>
     <input type="text" id="product-name" placeholder="Product Name" required />
     <input type="text" id="product-price" placeholder="Price (e.g. $20)" required />
-    <input type="file" id="product-image" accept="image/*" onchange="previewImage(event)" required />
+    <input type="file" id="product-images" accept="image/*" multiple onchange="previewImages(event)" required />
     <select id="product-category">
   <option value="">Select Category</option>
 
@@ -460,10 +484,18 @@ async function loadUserProducts(userId) {
 
   if (data && data.length > 0) {
     data.forEach(product => {
+      const images = JSON.parse(product.image_url || '[]');
+
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
-        <img src="${product.image_url}" alt="${product.name}">
+        <div class="carousel">
+          ${images.map((url, index) => `
+            <img src="${url}" class="carousel-img" style="display: ${index === 0 ? 'block' : 'none'};">
+          `).join('')}
+          <button class="prev">‹</button>
+          <button class="next">›</button>
+        </div>
         <div class="info">
           <h3>${product.name}</h3>
           <p>${product.price}</p>
@@ -472,6 +504,21 @@ async function loadUserProducts(userId) {
         </div>
       `;
       productGrid.appendChild(card);
+
+      // Add carousel functionality
+      const imgs = card.querySelectorAll('.carousel-img');
+      let current = 0;
+
+      card.querySelector('.next').onclick = () => {
+        imgs[current].style.display = 'none';
+        current = (current + 1) % imgs.length;
+        imgs[current].style.display = 'block';
+      };
+      card.querySelector('.prev').onclick = () => {
+        imgs[current].style.display = 'none';
+        current = (current - 1 + imgs.length) % imgs.length;
+        imgs[current].style.display = 'block';
+      };
     });
   } else {
     productGrid.innerHTML = '<p>No products yet.</p>';
@@ -580,68 +627,67 @@ async function loadUserProducts(userId) {
     reader.readAsDataURL(file);
   }
 
-  async function addProduct() {
-    
-    if (!currentUser || !currentUser.id) {
+ async function addProduct() {
+  if (!currentUser || !currentUser.id) {
     alert('Please wait for user to load or log in again.');
     return;
   }
 
-     const profileId = currentUser.id;
-    
-    const name = document.getElementById('product-name').value.trim();
-    const price = document.getElementById('product-price').value.trim();
-    const category = document.getElementById('product-category').value;
-    const description = document.getElementById('product-description').value.trim();
-    const imageFileInput = document.getElementById('product-image');
-    const imageFile = imageFileInput.files[0];
+  const profileId = currentUser.id;
+  const name = document.getElementById('product-name').value.trim();
+  const price = document.getElementById('product-price').value.trim();
+  const category = document.getElementById('product-category').value;
+  const description = document.getElementById('product-description').value.trim();
+  const imageFileInput = document.getElementById('product-images');
+  const imageFiles = Array.from(imageFileInput.files);
 
-    if (!name || !price || !category || !imageFile) {
-      alert('Please fill all required fields and upload an image.');
+  if (!name || !price || !category || imageFiles.length === 0) {
+    alert('Please fill all required fields and upload at least one image.');
+    return;
+  }
+
+  try {
+    const imageUrls = [];
+    for (const file of imageFiles) {
+      const imageUrl = await uploadImage(file, 'products');
+      imageUrls.push(imageUrl);
+    }
+
+    const { error } = await supabase.from('products').insert([
+      {
+        user_id: currentUser.id,
+        profile_id: profileId,
+        name,
+        price,
+        category,
+        description,
+        image_url: JSON.stringify(imageUrls), // save as JSON array
+        created_at: new Date()
+      }
+    ]);
+
+    if (error) {
+      alert('Error adding product: ' + error.message);
       return;
     }
 
-    try {
-      const imageUrl = await uploadImage(imageFile, 'products');
+    loadUserProducts(); // Refresh
 
-      const { data, error } = await supabase.from('products').insert([
-        {
-          user_id: currentUser.id,
-          name,
-          price,
-          category,
-          description,
-          profile_id: profileId,
-          image_url: imageUrl,
-          created_at: new Date()
-        }
-      ]);
+    // Clear modal form
+    document.getElementById('product-name').value = '';
+    document.getElementById('product-price').value = '';
+    document.getElementById('product-category').value = '';
+    document.getElementById('product-description').value = '';
+    imageFileInput.value = '';
+    document.getElementById('preview-images').innerHTML = '';
+    document.getElementById('product-modal').style.display = 'none';
 
-      if (error) {
-        alert('Error adding product: ' + error.message);
-        return;
-      }
-
-      // Refresh product list
-      loadUserProducts();
-
-      // Clear and close modal
-      document.getElementById('product-name').value = '';
-      document.getElementById('product-price').value = '';
-      document.getElementById('product-category').value = '';
-      document.getElementById('product-description').value = '';
-      imageFileInput.value = '';
-      
-      const previewImage = document.getElementById('preview-image');
-      if (previewImage) previewImage.style.display = 'none';
-      
-      document.getElementById('product-modal').style.display = 'none';
-
-    } catch (error) {
-      console.error(error);
-      alert('Failed to upload product image.');
-    }
+  } catch (error) {
+    console.error(error);
+    alert('Failed to upload product images.');
   }
+}
+
   
 window.goToEdit = function() {
   document.getElementById('edit-profile-modal').style.display = 'flex';
