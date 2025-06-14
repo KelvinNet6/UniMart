@@ -456,21 +456,34 @@ async function ensureProfile(userId) {
     .eq('id', userId)
     .single();
 
-  if (data) {
-    document.getElementById('display-name').textContent = data.username || 'Trader Name';
-    document.getElementById('display-location').textContent = data.location || '';
-    document.getElementById('display-bio').textContent = data.bio || '';
-    document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
-
-    if (data.cover_image_url) {
-      document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
-    }
-
-    // Store profile username for Message button
-    document.getElementById('message-trader-btn')?.setAttribute('href',
-      `messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}`
-    );
+ function isValidUrl(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
   }
+}
+
+if (data) {
+  document.getElementById('display-name').textContent = data.username || 'Trader Name';
+  document.getElementById('display-location').textContent = data.location || '';
+  document.getElementById('display-bio').textContent = data.bio || '';
+
+  const profileImage = isValidUrl(data.profile_image_url)
+    ? data.profile_image_url
+    : 'https://via.placeholder.com/120';
+
+  document.getElementById('profile-image').src = profileImage;
+
+  if (isValidUrl(data.cover_image_url)) {
+    document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
+  }
+
+  // Message button link
+  document.getElementById('message-trader-btn')?.setAttribute('href',
+    `messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}`
+  );
 }
 
 async function loadUserProducts(userId) {
