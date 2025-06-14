@@ -455,6 +455,7 @@ async function ensureProfile(userId) {
     .select('*')
     .eq('id', userId)
     .single();
+
   if (data) {
     document.getElementById('display-name').textContent = data.username || 'Trader Name';
     document.getElementById('display-location').textContent = data.location || '';
@@ -470,8 +471,8 @@ async function ensureProfile(userId) {
       messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}
     );
   }
-
-async function loadUserProducts(userId) {
+}
+  async function loadUserProducts(userId) {
   const { data } = await supabase
     .from('products')
     .select('*')
