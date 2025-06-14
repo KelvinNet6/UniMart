@@ -470,7 +470,6 @@ async function ensureProfile(userId) {
       messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}
     );
   }
-}
 
 async function loadUserProducts(userId) {
   const { data } = await supabase
