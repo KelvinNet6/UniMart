@@ -449,7 +449,7 @@ async function ensureProfile(userId) {
   }
 }
 
- async function loadUserProfile(userId) {
+async function loadUserProfile(userId) {
   const { data } = await supabase
     .from('profiles')
     .select('*')
@@ -463,15 +463,17 @@ async function ensureProfile(userId) {
     document.getElementById('profile-image').src = data.profile_image_url || 'https://via.placeholder.com/120';
 
     if (data.cover_image_url) {
-      document.querySelector('.cover-photo').style.backgroundImage = url('${data.cover_image_url}');
+      document.querySelector('.cover-photo').style.backgroundImage = `url('${data.cover_image_url}')`;
     }
 
     // Store profile username for Message button
-    document.getElementById('message-trader-btn')?.setAttribute('href',
-      messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}
+    document.getElementById('message-trader-btn')?.setAttribute(
+      'href',
+      `messages.html?user_id=${userId}&user_name=${encodeURIComponent(data.username)}`
     );
   }
 }
+
   async function loadUserProducts(userId) {
   const { data } = await supabase
     .from('products')
