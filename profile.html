@@ -484,7 +484,14 @@ async function loadUserProducts(userId) {
 
   if (data && data.length > 0) {
     data.forEach(product => {
-      const images = JSON.parse(product.image_url || '[]');
+      // ✅ Robust image parsing logic
+      let images = [];
+      try {
+        const parsed = JSON.parse(product.image_url);
+        images = Array.isArray(parsed) ? parsed : [parsed];
+      } catch {
+        images = [product.image_url]; // fallback for plain URL strings
+      }
 
       const card = document.createElement('div');
       card.className = 'product-card';
@@ -493,8 +500,10 @@ async function loadUserProducts(userId) {
           ${images.map((url, index) => `
             <img src="${url}" class="carousel-img" style="display: ${index === 0 ? 'block' : 'none'};">
           `).join('')}
-          <button class="prev">‹</button>
-          <button class="next">›</button>
+          ${images.length > 1 ? `
+            <button class="prev">‹</button>
+            <button class="next">›</button>
+          ` : ''}
         </div>
         <div class="info">
           <h3>${product.name}</h3>
@@ -505,26 +514,29 @@ async function loadUserProducts(userId) {
       `;
       productGrid.appendChild(card);
 
-      // Add carousel functionality
-      const imgs = card.querySelectorAll('.carousel-img');
-      let current = 0;
+      // ✅ Add carousel only if more than one image
+      if (images.length > 1) {
+        const imgs = card.querySelectorAll('.carousel-img');
+        let current = 0;
 
-      card.querySelector('.next').onclick = () => {
-        imgs[current].style.display = 'none';
-        current = (current + 1) % imgs.length;
-        imgs[current].style.display = 'block';
-      };
-      card.querySelector('.prev').onclick = () => {
-        imgs[current].style.display = 'none';
-        current = (current - 1 + imgs.length) % imgs.length;
-        imgs[current].style.display = 'block';
-      };
+        card.querySelector('.next').onclick = () => {
+          imgs[current].style.display = 'none';
+          current = (current + 1) % imgs.length;
+          imgs[current].style.display = 'block';
+        };
+
+        card.querySelector('.prev').onclick = () => {
+          imgs[current].style.display = 'none';
+          current = (current - 1 + imgs.length) % imgs.length;
+          imgs[current].style.display = 'block';
+        };
+      }
     });
   } else {
     productGrid.innerHTML = '<p>No products yet.</p>';
   }
 }
-
+  
  async function uploadImage(file, folder) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${folder}/${currentUser.id}-${Date.now()}.${fileExt}`;
