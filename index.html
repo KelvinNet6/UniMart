@@ -420,6 +420,38 @@
   #open-menu, #open-traders {
   display: none;
 }
+    .carousel {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.carousel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 20px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+.carousel .prev { left: 5px; }
+.carousel .next { right: 5px; }
+
 </style>
 </head>
 <body>
@@ -596,23 +628,60 @@ function displayProducts(products, filter = "") {
     const card = document.createElement("div");
     card.classList.add("product-card");
 
-  card.innerHTML = `
-  <img src="${p.image_url.startsWith('http') ? p.image_url : baseUrl + p.image_url}" alt="${p.name}" />
-  <div class="info">
-    <h3>${p.name}</h3>
-    <p>Price: ${p.price}</p>
-    <p class="posted-by">Listed by ${p.user}</p>
-    <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
-   <a 
-  href="messages.html?user_id=${p.user_id}&user_name=${encodeURIComponent(p.user)}&product_name=${encodeURIComponent(p.name)}"
-  class="shop-button"
-  >💬 Message Trader</a>
-  </div>
-`;
+    let images = [];
+
+    try {
+      const parsed = JSON.parse(p.image_url); // Try parsing as JSON array
+      images = Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      images = [p.image_url]; // Fallback to single image
+    }
+
+    images = images.map(url => url.startsWith("http") ? url : baseUrl + url);
+
+    card.innerHTML = `
+      <div class="carousel">
+        ${images.map((url, index) => `
+          <img src="${url}" class="carousel-img" style="display: ${index === 0 ? 'block' : 'none'};">
+        `).join('')}
+        ${images.length > 1 ? `
+          <button class="prev">‹</button>
+          <button class="next">›</button>
+        ` : ''}
+      </div>
+      <div class="info">
+        <h3>${p.name}</h3>
+        <p>Price: ${p.price}</p>
+        <p class="posted-by">Listed by ${p.user}</p>
+        <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
+        <a 
+          href="messages.html?user_id=${p.user_id}&user_name=${encodeURIComponent(p.user)}&product_name=${encodeURIComponent(p.name)}"
+          class="shop-button"
+        >💬 Message Trader</a>
+      </div>
+    `;
 
     feed.appendChild(card);
-  });
 
+    // Carousel button functionality
+    if (images.length > 1) {
+      const imgs = card.querySelectorAll(".carousel-img");
+      let current = 0;
+
+      card.querySelector(".next").addEventListener("click", () => {
+        imgs[current].style.display = "none";
+        current = (current + 1) % imgs.length;
+        imgs[current].style.display = "block";
+      });
+
+      card.querySelector(".prev").addEventListener("click", () => {
+        imgs[current].style.display = "none";
+        current = (current - 1 + imgs.length) % imgs.length;
+        imgs[current].style.display = "block";
+      });
+    }
+  });
+}
   // Add click listeners for the message buttons
   document.querySelectorAll(".message-trader-btn").forEach(button => {
     button.addEventListener("click", () => {
