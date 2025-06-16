@@ -789,7 +789,7 @@ loadTraders();
       const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://kelvinnet6.github.io/One-Stop-Trade/",
+          redirectTo: "https://kelvinnet6.github.io/UniMart/",
         },
       });
       if (error) alert("Google login error: " + error.message);
