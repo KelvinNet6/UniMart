@@ -520,7 +520,6 @@
       "https://honrgtrvzpymssmlbcbn.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw"
     );
-
     const feedWrapper = document.getElementById("product-feed-wrapper");
     const feed = document.getElementById("product-feed");
     const searchInput = document.getElementById("search");
@@ -580,6 +579,8 @@
 }
     
 function displayProducts(products, filter = "") {
+  const baseUrl = "https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/product-images/";
+
   feed.innerHTML = "";
 
   const filtered = products.filter(p =>
@@ -596,7 +597,7 @@ function displayProducts(products, filter = "") {
     card.classList.add("product-card");
 
   card.innerHTML = `
-  <img src="${p.image_url}" alt="${p.name}" />
+  <img src="${p.image_url.startsWith('http') ? p.image_url : baseUrl + p.image_url}" alt="${p.name}" />
   <div class="info">
     <h3>${p.name}</h3>
     <p>Price: ${p.price}</p>
