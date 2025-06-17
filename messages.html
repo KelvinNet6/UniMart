@@ -481,6 +481,7 @@
       });
       chatMessages.scrollTop = chatMessages.scrollHeight;
   }
+    localStorage.setItem('unreadMessages', 0);
 }
   async function sendMessage(content) {
     const { error } = await supabase.from('messages').insert([{
