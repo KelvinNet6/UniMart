@@ -899,6 +899,22 @@ function incrementBadge() {
 
 const messageBadge = document.getElementById('message-badge');
 
+     function updateBadgeFromStorage() {
+    const count = parseInt(localStorage.getItem('unreadMessages')) || 0;
+    if (count > 0) {
+      messageBadge.textContent = count;
+      messageBadge.style.display = 'inline-block';
+    } else {
+      messageBadge.style.display = 'none';
+    }
+  }
+
+  // Update badge on page load
+  updateBadgeFromStorage();
+
+  // Optional: refresh on focus
+  window.addEventListener('focus', updateBadgeFromStorage);
+
 supabaseClient
   .channel('realtime:messages')
   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
