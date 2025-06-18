@@ -748,6 +748,7 @@ async function loadTraders() {
   }
 }
 loadTraders();
+let messageChannel = null;
 
     async function updateUI() {
       const {
@@ -762,22 +763,28 @@ loadTraders();
          welcomeMessage.style.display = "block";
          welcomeMessage.textContent = `Welcome, ${user.email}`;
 
-        supabaseClient
-            .channel('realtime:messages')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-             const newMessage = payload.new;
+    if (!messageChannel) {
+      messageChannel = supabaseClient
+      .channel('realtime:messages')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages',
+      }, payload => {
+        const newMessage = payload.new;
 
-             if (newMessage.receiver_id === currentUserId && newMessage.sender_id !== currentUserId) {
-              incrementBadge();
-          }
+        if (newMessage.receiver_id === currentUserId && newMessage.sender_id !== currentUserId) {
+          incrementBadge();
+        }
 
-    if (newMessage.chat_id === currentChatId) {
-      openChat(currentChatUser);
-    }
+        if (newMessage.chat_id === currentChatId) {
+          openChat(currentChatUser);
+        }
 
-    loadConversations();
-  })
-  .subscribe();
+              loadConversations();
+           })
+          .subscribe();
+      }
         
          setTimeout(() => {
          welcomeMessage.style.display = "none";
@@ -813,8 +820,7 @@ loadTraders();
      document.getElementById('open-menu').style.display = 'none';
      document.getElementById('open-traders').style.display = 'none';
    }
-
-    }
+}
 
     loginBtn.addEventListener("click", async () => {
       const email = document.getElementById("login-email").value.trim();
