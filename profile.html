@@ -756,6 +756,24 @@ window.saveProfile = async function() {
 
   window.addProduct = addProduct;
 
+  function previewImages(event) {
+  const previewContainer = document.getElementById('preview-images');
+  previewContainer.innerHTML = ''; // Clear previous
+
+  const files = event.target.files;
+  for (const file of files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.maxWidth = '100px';
+      img.style.margin = '5px';
+      previewContainer.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
 </script>
 </body>
 </html>
