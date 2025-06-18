@@ -762,6 +762,23 @@ loadTraders();
          welcomeMessage.style.display = "block";
          welcomeMessage.textContent = `Welcome, ${user.email}`;
 
+        supabaseClient
+            .channel('realtime:messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+             const newMessage = payload.new;
+
+             if (newMessage.receiver_id === currentUserId && newMessage.sender_id !== currentUserId) {
+              incrementBadge();
+          }
+
+    if (newMessage.chat_id === currentChatId) {
+      openChat(currentChatUser);
+    }
+
+    loadConversations();
+  })
+  .subscribe();
+        
          setTimeout(() => {
          welcomeMessage.style.display = "none";
       }, 5000);
@@ -927,23 +944,6 @@ const messageBadge = document.getElementById('message-badge');
 
   // Optional: refresh on focus
   window.addEventListener('focus', updateBadgeFromStorage);
-
-supabaseClient
-  .channel('realtime:messages')
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-    const newMessage = payload.new;
-
-    if (newMessage.receiver_id === currentUserId && newMessage.sender_id !== currentUserId) {
-      incrementBadge();
-    }
-
-    if (newMessage.chat_id === currentChatId) {
-      openChat(currentChatUser);
-    }
-
-    loadConversations();
-  })
-  .subscribe();
   
 // Reset badge when on messages page
 if (window.location.pathname.includes('messages.html')) {
