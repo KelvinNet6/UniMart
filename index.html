@@ -918,18 +918,19 @@ loadTraders();
       updateUI();
     });
 
-  // Ensure this runs after currentUserId is set in getUser()
-function incrementBadge() {
+ function incrementBadge() {
   if (messageBadge) {
     let count = parseInt(messageBadge.textContent) || 0;
-    messageBadge.textContent = count + 1;
+    count += 1;
+    messageBadge.textContent = count;
     messageBadge.style.display = 'inline-block';
+    localStorage.setItem('unreadMessages', count);
   }
 }
 
-const messageBadge = document.getElementById('message-badge');
+ const messageBadge = document.getElementById('message-badge');
 
-     function updateBadgeFromStorage() {
+  function updateBadgeFromStorage() {
     const count = parseInt(localStorage.getItem('unreadMessages')) || 0;
     if (count > 0) {
       messageBadge.textContent = count;
