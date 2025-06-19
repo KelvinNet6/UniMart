@@ -444,23 +444,26 @@
   #open-menu, #open-traders {
   display: none;
 }
- .carousel {
+    
+.carousel {
   position: relative;
   width: 100%;
-  height: auto; 
   overflow: hidden;
   border-radius: 6px;
   background: none;
   box-shadow: none;
   padding: 0;
+  display: flex;
+  justify-content: center;
 }
-    
+
 .carousel-img {
+  display: block;
   width: auto;
   height: auto;
-  max-width: 100%;   /* Prevents horizontal overflow */
-  display: block;
-  margin: 0 auto;    /* Centers image */
+  max-width: 100%;
+  max-height: 400px; 
+  object-fit: contain;
 }
 
 .carousel button {
