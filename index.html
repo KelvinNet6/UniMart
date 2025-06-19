@@ -951,13 +951,14 @@ function updateBadgeFromStorage() {
   }
 }
 
-
   // Update badge on page load
   updateBadgeFromStorage();
 
+   document.addEventListener('DOMContentLoaded', updateBadgeFromStorage);
+
   // Optional: refresh on focus
   window.addEventListener('focus', updateBadgeFromStorage);
-  
+ 
 // Reset badge when on messages page
 if (window.location.pathname.includes('messages.html')) {
   const badge = document.getElementById('message-badge');
