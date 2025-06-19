@@ -95,8 +95,6 @@
     if (error || !product) {
       alert("Product not found.");
     } else {
-      // Update product preview
-     let imageUrl = product.image_url;
     let imageUrl = product.image_url;
       if (!imageUrl.startsWith("http")) {
       imageUrl = `https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/profile-bucket-1/${imageUrl}`;
