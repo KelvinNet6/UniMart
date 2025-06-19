@@ -98,7 +98,7 @@
       // Update product preview
      let imageUrl = product.image_url;
      if (!imageUrl.startsWith("http")) {
-       imageUrl = `https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/profile-bucket-1/${imageUrl}`;
+      imageUrl = `https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/profile-bucket.1/${imageUrl}`;
       }
       document.getElementById("product-image").src = imageUrl;
       document.getElementById("product-name").textContent = product.name;
