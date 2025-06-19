@@ -97,10 +97,11 @@
     } else {
       // Update product preview
      let imageUrl = product.image_url;
-     if (!imageUrl.startsWith("http")) {
-      imageUrl = `https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/profile-bucket.1/${imageUrl}`;
+    let imageUrl = product.image_url;
+      if (!imageUrl.startsWith("http")) {
+      imageUrl = `https://honrgtrvzpymssmlbcbn.supabase.co/storage/v1/object/public/profile-bucket-1/${imageUrl}`;
       }
-      document.getElementById("product-image").src = imageUrl;
+      document.getElementById("product-image").src = imageUrl || "https://via.placeholder.com/200";
       document.getElementById("product-name").textContent = product.name;
       document.getElementById("product-category").textContent = `Category: ${product.category || "N/A"}`;
       document.getElementById("product-price").textContent = `Price: ${product.price}`;
