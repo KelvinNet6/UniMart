@@ -111,11 +111,11 @@ const buyerEmail = document.getElementById("email").value;
 const price = parseFloat(product.price);
 
 // 🔄 Request account details from ProWallet API
-const walletRes = await fetch("https://api.yourdomain.com/prowallet/account", {
+const walletRes = await fetch("https://unayo.standardbank.com/unayo/personal/unayo-internet-banking", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${YOUR_CLIENT_KEY}` // if you're using auth
+    "Authorization": `Bearer ${hghvhliuuuhuhuhougkuvfxsew3q2zxtyo}` // if you're using auth
   },
   body: JSON.stringify({ email: buyerEmail })
 });
