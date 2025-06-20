@@ -110,12 +110,13 @@
 const buyerEmail = document.getElementById("email").value;
 const price = parseFloat(product.price);
 
-// 🔄 Request account details from ProWallet API
+const token = "hghvhliuuuhuhuhougkuvfxsew3q2zxtyo";
+
 const walletRes = await fetch("https://unayo.standardbank.com/unayo/personal/unayo-internet-banking", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${hghvhliuuuhuhuhougkuvfxsew3q2zxtyo}` // if you're using auth
+    "Authorization": `Bearer ${token}`
   },
   body: JSON.stringify({ email: buyerEmail })
 });
