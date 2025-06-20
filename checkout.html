@@ -68,9 +68,9 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabaseUrl = 'https://honrgtrvzpymssmlbcbn.supabase.co';
-  const supabaseKey = 'YOUR_PUBLIC_ANON_KEY_HERE';
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabaseUrl = 'https://honrgtrvzpymssmlbcbn.supabase.co'
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbnJndHJ2enB5bXNzbWxiY2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODMzOTEsImV4cCI6MjA2Mzg1OTM5MX0.dcQNVrulRZxGvyeYX6Wq8VtJKi3OYpYVzirR5jk8axw'
+  const supabase = createClient(supabaseUrl, supabaseKey)
 
   const params = new URLSearchParams(window.location.search);
   const productId = params.get("product_id");
