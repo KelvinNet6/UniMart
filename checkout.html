@@ -132,11 +132,11 @@ if (walletInfo.balance < price) {
 }
 
 
-    const paymentRes = await fetch("https://api.yourdomain.com/prowallet/charge", {
+  const paymentRes = await fetch("https://unayo.standardbank.com/unayo/personal/unayo-internet-banking", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${YOUR_CLIENT_KEY}`
+    "Authorization": `Bearer ${token}`
   },
   body: JSON.stringify({
     email: buyerEmail,
