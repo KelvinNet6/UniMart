@@ -395,27 +395,32 @@
   font-weight: bold;
 }
 
-/* Hide sidebars on mobile and use overlays instead */
+/* Style for fixed mobile side panels */
 .side-panel {
   position: fixed;
   top: 0;
   bottom: 0;
   width: 80%;
-  background: white;
+  max-width: 300px;
+  background: #fff;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   overflow-y: auto;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
+  padding: 1rem;
 }
+
 .side-panel.right {
   right: 0;
   left: auto;
   transform: translateX(100%);
 }
+
 .side-panel.show {
   transform: translateX(0);
 }
+
 .close-btn {
   background: transparent;
   border: none;
@@ -425,6 +430,7 @@
   cursor: pointer;
 }
 
+/* Hide desktop sidebars on small screens */
 @media (max-width: 600px) {
   #left-sidebar,
   #random-traders {
@@ -432,7 +438,23 @@
   }
 
   #mobile-controls {
-    display: flex;
+    display: flex !important;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+  }
+
+  #open-menu,
+  #open-traders {
+    display: inline-block !important;
+    background: #333;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
   }
 
   #product-feed-wrapper {
@@ -440,9 +462,16 @@
     flex: 1;
   }
 }
-  #open-menu, #open-traders {
-  display: none;
+
+/* Always hide open buttons on desktop */
+@media (min-width: 601px) {
+  #open-menu,
+  #open-traders,
+  #mobile-controls {
+    display: none !important;
+  }
 }
+
     
 .carousel {
   position: relative;
