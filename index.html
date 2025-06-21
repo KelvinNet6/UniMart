@@ -799,20 +799,20 @@ function displayProducts(products, filter = "") {
     document.getElementById("mobile-traders-panel").classList.remove("show");
   }
 
-  document.getElementById("open-menu").addEventListener("click", () => {
-    moveContentToMobilePanels();
-    document.getElementById("mobile-menu-panel").classList.add("show");
-  });
+  // on button click – just show the panel
+document.getElementById("open-menu").addEventListener("click", () => {
+  document.getElementById("mobile-menu-panel").classList.add("show");
+});
 
-  document.getElementById("open-traders").addEventListener("click", () => {
-    moveContentToMobilePanels();
-    document.getElementById("mobile-traders-panel").classList.add("show");
-  });
+document.getElementById("open-traders").addEventListener("click", () => {
+  document.getElementById("mobile-traders-panel").classList.add("show");
+});
 
   // ✅ Load traders + clone after page is ready
   document.addEventListener("DOMContentLoaded", () => {
     loadTradersAndCloneToMobile();
   });
+   
 let messageChannel = null;
 
     async function updateUI() {
