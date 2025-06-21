@@ -733,23 +733,27 @@ function displayProducts(products, filter = "") {
     });
   });
 
-async function loadTraders() {
-  const list = document.getElementById('traders-container');
-  if (!list) return;
+// Load traders into desktop panel first
+  async function loadTraders() {
+    const list = document.getElementById('traders-container');
+    if (!list) return;
 
-  try {
-    const { data, error } = await supabaseClient
-      .from('profiles')
-      .select('id, username, bio, location, profile_image_url')
-      .order('id', { ascending: false })
-      .limit(10);
+    try {
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id, username, bio, location, profile_image_url')
+        .order('id', { ascending: false })
+        .limit(10);
 
-    if (error) throw error;
+      if (error) throw error;
 
-    if (!data || data.length === 0) {
-      list.innerHTML = '<p>No traders found.</p>';
-    } else {
-      list.innerHTML = ''; // clear loading message
+      list.innerHTML = "";
+
+      if (data.length === 0) {
+        list.innerHTML = "<p>No traders found.</p>";
+        return;
+      }
+
       data.forEach(trader => {
         const div = document.createElement('div');
         div.className = 'trader-card';
@@ -760,13 +764,54 @@ async function loadTraders() {
         `;
         list.appendChild(div);
       });
+
+    } catch (err) {
+      console.error("Error loading traders:", err);
+      list.innerHTML = "<p>Error loading traders.</p>";
     }
-  } catch (err) {
-    console.error('Error loading traders:', err.message);
-    list.innerHTML = '<p>Error loading traders.</p>';
   }
-}
-loadTraders();
+
+  function moveContentToMobilePanels() {
+    const menuContent = document.getElementById("mobile-menu-content");
+    const tradersContent = document.getElementById("mobile-traders-content");
+
+    const originalMenu = document.getElementById("left-sidebar");
+    const originalTraders = document.getElementById("random-traders");
+
+    // Clear previous
+    menuContent.innerHTML = "";
+    tradersContent.innerHTML = "";
+
+    if (originalMenu) {
+      const menuClone = originalMenu.cloneNode(true);
+      menuContent.appendChild(menuClone);
+    }
+
+    if (originalTraders) {
+      const tradersClone = originalTraders.cloneNode(true);
+      tradersContent.appendChild(tradersClone);
+    }
+  }
+
+  function closePanels() {
+    document.getElementById("mobile-menu-panel").classList.remove("show");
+    document.getElementById("mobile-traders-panel").classList.remove("show");
+  }
+
+  document.getElementById("open-menu").addEventListener("click", () => {
+    moveContentToMobilePanels(); // clone fresh
+    document.getElementById("mobile-menu-panel").classList.add("show");
+  });
+
+  document.getElementById("open-traders").addEventListener("click", () => {
+    moveContentToMobilePanels(); // clone fresh
+    document.getElementById("mobile-traders-panel").classList.add("show");
+  });
+
+  // Load traders after DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    loadTraders();
+  });
 let messageChannel = null;
 
     async function updateUI() {
@@ -984,43 +1029,6 @@ if (window.location.pathname.includes('messages.html')) {
   if (badge) badge.style.display = 'none';
 }
 
- // Button click handlers
-document.getElementById("open-menu").addEventListener("click", () => {
-  moveContentToMobilePanels();
-  document.getElementById("mobile-menu-panel").classList.add("show");
-});
-
-document.getElementById("open-traders").addEventListener("click", () => {
-  moveContentToMobilePanels();
-  document.getElementById("mobile-traders-panel").classList.add("show");
-});
-
-  function closePanels() {
-    menuPanel.classList.remove("show");
-    tradersPanel.classList.remove("show");
-  }
-
-  // Clone content into mobile panels fresh
-function moveContentToMobilePanels() {
-  const menuContent = document.getElementById("mobile-menu-content");
-  const tradersContent = document.getElementById("mobile-traders-content");
-
-  const originalMenu = document.getElementById("left-sidebar");
-  const originalTraders = document.getElementById("random-traders");
-
-  menuContent.innerHTML = "";
-  tradersContent.innerHTML = "";
-
-  if (originalMenu) {
-    const menuClone = originalMenu.cloneNode(true);
-    menuContent.appendChild(menuClone);
-  }
-
-  if (originalTraders) {
-    const tradersClone = originalTraders.cloneNode(true);
-    tradersContent.appendChild(tradersClone);
-  }
-}
 </script>
 </body>
 </html>
