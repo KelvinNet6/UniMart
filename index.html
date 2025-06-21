@@ -761,10 +761,6 @@ async function loadTraders() {
         list.appendChild(div);
       });
     }
-
-    // Now clone the content into the mobile panels AFTER traders loaded
-    moveContentToMobilePanels();
-
   } catch (err) {
     console.error('Error loading traders:', err.message);
     list.innerHTML = '<p>Error loading traders.</p>';
@@ -988,15 +984,15 @@ if (window.location.pathname.includes('messages.html')) {
   if (badge) badge.style.display = 'none';
 }
 
-  //========
-  openMenuBtn.addEventListener("click", () => {
-  moveContentToMobilePanels(); // ⬅ move cloning here
-  menuPanel.classList.add("show");
+ // Button click handlers
+document.getElementById("open-menu").addEventListener("click", () => {
+  moveContentToMobilePanels();
+  document.getElementById("mobile-menu-panel").classList.add("show");
 });
 
-openTradersBtn.addEventListener("click", () => {
-  moveContentToMobilePanels(); // ⬅ also here
-  tradersPanel.classList.add("show");
+document.getElementById("open-traders").addEventListener("click", () => {
+  moveContentToMobilePanels();
+  document.getElementById("mobile-traders-panel").classList.add("show");
 });
 
   function closePanels() {
@@ -1004,18 +1000,17 @@ openTradersBtn.addEventListener("click", () => {
     tradersPanel.classList.remove("show");
   }
 
-  function moveContentToMobilePanels() {
+  // Clone content into mobile panels fresh
+function moveContentToMobilePanels() {
   const menuContent = document.getElementById("mobile-menu-content");
   const tradersContent = document.getElementById("mobile-traders-content");
 
   const originalMenu = document.getElementById("left-sidebar");
   const originalTraders = document.getElementById("random-traders");
 
-  // Clear previous clones
   menuContent.innerHTML = "";
   tradersContent.innerHTML = "";
 
-  // Clone current content
   if (originalMenu) {
     const menuClone = originalMenu.cloneNode(true);
     menuContent.appendChild(menuClone);
