@@ -735,34 +735,34 @@ function displayProducts(products, filter = "") {
 
 async function loadTraders() {
   const list = document.getElementById('traders-container');
-  if (!list) return; // Prevents 'null' error if the element is missing
+  if (!list) return;
 
   try {
     const { data, error } = await supabaseClient
       .from('profiles')
       .select('id, username, bio, location, profile_image_url')
-      .order('id', { ascending: false }) // optional: show latest
+      .order('id', { ascending: false })
       .limit(10);
 
     if (error) throw error;
 
     if (!data || data.length === 0) {
       list.innerHTML = '<p>No traders found.</p>';
-      return;
+    } else {
+      list.innerHTML = '';
+      data.forEach(trader => {
+        const div = document.createElement('div');
+        div.className = 'trader-card';
+        div.innerHTML = `
+          <h4><a href="profile.html?user_id=${trader.id}" class="trader-link">${trader.username}</a></h4>
+          <p>${trader.bio || 'No bio available.'}</p>
+          <small>${trader.location || 'Unknown location'}</small>
+        `;
+        list.appendChild(div);
+      });
     }
-
-    list.innerHTML = '';
-
-    data.forEach(trader => {
-      const div = document.createElement('div');
-      div.className = 'trader-card';
-      div.innerHTML = `
-      <h4><a href="profile.html?user_id=${trader.id}" class="trader-link">${trader.username}</a></h4>
-      <p>${trader.bio || 'No bio available.'}</p>
-      <small>${trader.location || 'Unknown location'}</small>
-      `;
-      list.appendChild(div);
-    });
+    // Now that traders are loaded, clone the panels:
+    moveContentToMobilePanels();
 
   } catch (err) {
     console.error('Error loading traders:', err.message);
@@ -770,6 +770,8 @@ async function loadTraders() {
   }
 }
 loadTraders();
+document.addEventListener("DOMContentLoaded", moveContentToMobilePanels);
+   
 let messageChannel = null;
 
     async function updateUI() {
@@ -1025,10 +1027,6 @@ openTradersBtn.addEventListener("click", () => {
     tradersContent.appendChild(tradersClone);
   }
 }
-
-
-document.addEventListener("DOMContentLoaded", moveContentToMobilePanels);
-
 </script>
 </body>
 </html>
