@@ -999,6 +999,21 @@ if (window.location.pathname.includes('messages.html')) {
     menuPanel.classList.remove("show");
     tradersPanel.classList.remove("show");
   }
+
+   function moveContentToMobilePanels() {
+  // Clone and inject left sidebar (Menu)
+  const originalMenu = document.getElementById("left-sidebar");
+  const menuClone = originalMenu.cloneNode(true);
+  document.getElementById("mobile-menu-content").appendChild(menuClone);
+
+  // Clone and inject right sidebar (Traders)
+  const originalTraders = document.getElementById("random-traders");
+  const tradersClone = originalTraders.cloneNode(true);
+  document.getElementById("mobile-traders-content").appendChild(tradersClone);
+}
+
+document.addEventListener("DOMContentLoaded", moveContentToMobilePanels);
+
 </script>
 </body>
 </html>
