@@ -443,6 +443,26 @@
   #open-menu, #open-traders {
   display: none;
 }
+@media (max-width: 600px) {
+  /* Show the mobile open buttons */
+  #open-menu, #open-traders {
+    display: inline-block !important;
+  }
+
+  /* Hide desktop sidebars on mobile */
+  #left-sidebar,
+  #random-traders {
+    display: none !important;
+  }
+
+  /* Make sure cloned sidebars inside mobile panels are visible */
+  #mobile-menu-content #left-sidebar,
+  #mobile-traders-content #random-traders {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
 
     
 .carousel {
@@ -802,12 +822,14 @@ function displayProducts(products, filter = "") {
 
   // on button click – just show the panel
 document.getElementById("open-menu").addEventListener("click", () => {
+  moveContentToMobilePanels();  // Clone content freshly
   document.getElementById("mobile-menu-panel").classList.add("show");
 });
-
 document.getElementById("open-traders").addEventListener("click", () => {
+  moveContentToMobilePanels();  // Clone content freshly
   document.getElementById("mobile-traders-panel").classList.add("show");
 });
+
 
   // ✅ Load traders + clone after page is ready
   document.addEventListener("DOMContentLoaded", () => {
