@@ -734,7 +734,7 @@ function displayProducts(products, filter = "") {
   });
 
 // Load traders into desktop panel first
-  async function loadTraders() {
+  async function loadTradersAndCloneToMobile() {
     const list = document.getElementById('traders-container');
     if (!list) return;
 
@@ -751,22 +751,24 @@ function displayProducts(products, filter = "") {
 
       if (data.length === 0) {
         list.innerHTML = "<p>No traders found.</p>";
-        return;
+      } else {
+        data.forEach(trader => {
+          const div = document.createElement('div');
+          div.className = 'trader-card';
+          div.innerHTML = `
+            <h4><a href="profile.html?user_id=${trader.id}" class="trader-link">${trader.username}</a></h4>
+            <p>${trader.bio || 'No bio available.'}</p>
+            <small>${trader.location || 'Unknown location'}</small>
+          `;
+          list.appendChild(div);
+        });
       }
 
-      data.forEach(trader => {
-        const div = document.createElement('div');
-        div.className = 'trader-card';
-        div.innerHTML = `
-          <h4><a href="profile.html?user_id=${trader.id}" class="trader-link">${trader.username}</a></h4>
-          <p>${trader.bio || 'No bio available.'}</p>
-          <small>${trader.location || 'Unknown location'}</small>
-        `;
-        list.appendChild(div);
-      });
+      // 🔁 Now that traders loaded, clone content to mobile
+      moveContentToMobilePanels();
 
     } catch (err) {
-      console.error("Error loading traders:", err);
+      console.error("Error loading traders:", err.message);
       list.innerHTML = "<p>Error loading traders.</p>";
     }
   }
@@ -778,7 +780,6 @@ function displayProducts(products, filter = "") {
     const originalMenu = document.getElementById("left-sidebar");
     const originalTraders = document.getElementById("random-traders");
 
-    // Clear previous
     menuContent.innerHTML = "";
     tradersContent.innerHTML = "";
 
@@ -799,18 +800,18 @@ function displayProducts(products, filter = "") {
   }
 
   document.getElementById("open-menu").addEventListener("click", () => {
-    moveContentToMobilePanels(); // clone fresh
+    moveContentToMobilePanels();
     document.getElementById("mobile-menu-panel").classList.add("show");
   });
 
   document.getElementById("open-traders").addEventListener("click", () => {
-    moveContentToMobilePanels(); // clone fresh
+    moveContentToMobilePanels();
     document.getElementById("mobile-traders-panel").classList.add("show");
   });
 
-  // Load traders after DOM is ready
+  // ✅ Load traders + clone after page is ready
   document.addEventListener("DOMContentLoaded", () => {
-    loadTraders();
+    loadTradersAndCloneToMobile();
   });
 let messageChannel = null;
 
