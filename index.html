@@ -749,7 +749,7 @@ async function loadTraders() {
     if (!data || data.length === 0) {
       list.innerHTML = '<p>No traders found.</p>';
     } else {
-      list.innerHTML = '';
+      list.innerHTML = ''; // clear loading message
       data.forEach(trader => {
         const div = document.createElement('div');
         div.className = 'trader-card';
@@ -761,7 +761,8 @@ async function loadTraders() {
         list.appendChild(div);
       });
     }
-    // Now that traders are loaded, clone the panels:
+
+    // Now clone the content into the mobile panels AFTER traders loaded
     moveContentToMobilePanels();
 
   } catch (err) {
