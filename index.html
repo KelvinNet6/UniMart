@@ -989,29 +989,43 @@ if (window.location.pathname.includes('messages.html')) {
 
   //========
   openMenuBtn.addEventListener("click", () => {
-    menuPanel.classList.add("show");
-  });
+  moveContentToMobilePanels(); // ⬅ move cloning here
+  menuPanel.classList.add("show");
+});
 
-  openTradersBtn.addEventListener("click", () => {
-    tradersPanel.classList.add("show");
-  });
+openTradersBtn.addEventListener("click", () => {
+  moveContentToMobilePanels(); // ⬅ also here
+  tradersPanel.classList.add("show");
+});
 
   function closePanels() {
     menuPanel.classList.remove("show");
     tradersPanel.classList.remove("show");
   }
 
-   function moveContentToMobilePanels() {
-  // Clone and inject left sidebar (Menu)
-  const originalMenu = document.getElementById("left-sidebar");
-  const menuClone = originalMenu.cloneNode(true);
-  document.getElementById("mobile-menu-content").appendChild(menuClone);
+  function moveContentToMobilePanels() {
+  const menuContent = document.getElementById("mobile-menu-content");
+  const tradersContent = document.getElementById("mobile-traders-content");
 
-  // Clone and inject right sidebar (Traders)
+  const originalMenu = document.getElementById("left-sidebar");
   const originalTraders = document.getElementById("random-traders");
-  const tradersClone = originalTraders.cloneNode(true);
-  document.getElementById("mobile-traders-content").appendChild(tradersClone);
+
+  // Clear previous clones
+  menuContent.innerHTML = "";
+  tradersContent.innerHTML = "";
+
+  // Clone current content
+  if (originalMenu) {
+    const menuClone = originalMenu.cloneNode(true);
+    menuContent.appendChild(menuClone);
+  }
+
+  if (originalTraders) {
+    const tradersClone = originalTraders.cloneNode(true);
+    tradersContent.appendChild(tradersClone);
+  }
 }
+
 
 document.addEventListener("DOMContentLoaded", moveContentToMobilePanels);
 
