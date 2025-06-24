@@ -481,6 +481,14 @@
       });
       chatMessages.scrollTop = chatMessages.scrollHeight;
   }
+      // ✅ Mark messages as read in the database
+  await supabase
+    .from('messages')
+    .update({ is_read: true })
+    .eq('chat_id', currentChatId)
+    .eq('receiver_id', currentUserId)
+    .eq('is_read', false);
+
     localStorage.setItem('unreadMessages', 0);
 }
   async function sendMessage(content) {
