@@ -1031,32 +1031,31 @@ function incrementBadge() {
   }
 }
 
-function updateBadgeFromStorage() {
-  const count = parseInt(localStorage.getItem('unreadMessages')) || 0;
-  const badge = document.getElementById('message-badge');
-  if (!badge) return;
+  function updateBadgeFromStorage() {
+    const count = parseInt(localStorage.getItem('unreadMessages')) || 0;
+    const badge = document.getElementById('message-badge');
+    if (!badge) return;
 
-  if (count > 0) {
-    badge.textContent = count;
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
   }
-}
 
-  // Update badge on page load
-  updateBadgeFromStorage();
+  // Run on page load
+  document.addEventListener('DOMContentLoaded', updateBadgeFromStorage);
 
-   document.addEventListener('DOMContentLoaded', updateBadgeFromStorage);
-
-  // Optional: refresh on focus
+  // Update badge when tab/window regains focus
   window.addEventListener('focus', updateBadgeFromStorage);
- 
-// Reset badge when on messages page
-if (window.location.pathname.includes('messages.html')) {
-  const badge = document.getElementById('message-badge');
-  if (badge) badge.style.display = 'none';
-}
+
+  // Update badge in real-time when localStorage is modified in other tabs
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'unreadMessages') {
+      updateBadgeFromStorage();
+    }
+  });
 
 </script>
 </body>
