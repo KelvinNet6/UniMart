@@ -1064,7 +1064,45 @@ async function updateBadgeFromSupabase() {
 document.addEventListener('DOMContentLoaded', updateBadgeFromSupabase);
 window.addEventListener('focus', updateBadgeFromSupabase);
 
+ const badge = document.getElementById('message-badge');
 
+  async function updateMessageBadge() {
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
+    if (error || !user) return;
+
+    const { data, error: fetchError } = await supabaseClient
+      .from('messages')
+      .select('id', { count: 'exact', head: true }) // only count
+      .eq('receiver_id', user.id)
+      .eq('is_read', false);
+
+    if (fetchError || !badge) {
+      console.error('Failed to fetch unread messages:', fetchError);
+      return;
+    }
+
+    const unreadCount = data.length || 0;
+
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  // Run on load
+  document.addEventListener('DOMContentLoaded', updateMessageBadge);
+
+  // Update on tab refocus
+  window.addEventListener('focus', updateMessageBadge);
+
+  // Optional: live updates across tabs
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'unreadMessages') {
+      updateMessageBadge();
+    }
+  });
 </script>
 </body>
 </html>
