@@ -560,8 +560,7 @@
   .subscribe();
 
   getUser();
-
-  <script>
+  
   function updateBadgeFromStorage() {
     const badge = document.getElementById('message-badge');
     const count = parseInt(localStorage.getItem('unreadMessages')) || 0;
@@ -578,11 +577,8 @@
 
   // Run this on page load
   document.addEventListener('DOMContentLoaded', updateBadgeFromStorage);
-
   // Optional: Refresh badge every few seconds (e.g. for inbox.html)
   setInterval(updateBadgeFromStorage, 5000);
-</script>
-
    // In messages.html
 localStorage.setItem('unreadMessages', 0);
   
