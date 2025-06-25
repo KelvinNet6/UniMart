@@ -353,7 +353,7 @@
   let currentChatId = null;
 
   async function getUser() {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
 
     if (!user) {
       window.location.href = '/login.html';
@@ -371,7 +371,7 @@
 
     if (targetUserId && targetUsername) {
       let profilePic = 'https://via.placeholder.com/40';
-      const { data: profile } = await supabase
+      const { data: profile } = await supabaseClient
         .from('profiles')
         .select('profile_image_url')
         .eq('id', targetUserId)
