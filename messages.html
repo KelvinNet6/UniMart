@@ -546,29 +546,41 @@
     chatWidget.style.display = 'block';
   });
 
-  supabase
+  const channel = supabase
   .channel('realtime:messages')
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-    const msg = payload.new;
+  .on(
+    'postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'messages' },
+    payload => {
+      const msg = payload.new;
 
-    // Ignore if this is a message from the current chat you're viewing
-    const isCurrentChat = msg.chat_id === currentChatId;
+      const isCurrentChat = msg.chat_id === currentChatId;
+      const isFromSelf = msg.sender_id === currentUserId;
 
-    // Ignore messages sent by the user themselves
-    const isFromSelf = msg.sender_id === currentUserId;
+      if (!isCurrentChat && !isFromSelf) {
+        let count = parseInt(localStorage.getItem('unreadMessages')) || 0;
+        localStorage.setItem('unreadMessages', count + 1);
+      }
 
-    if (!isCurrentChat && !isFromSelf) {
-      let count = parseInt(localStorage.getItem('unreadMessages')) || 0;
-      localStorage.setItem('unreadMessages', count + 1);
+      loadConversations();
+
+      if (isCurrentChat) {
+        openChat(currentChatUser);
+      }
     }
+  );
 
-    loadConversations();
+try {
+  const { error } = await channel.subscribe();
 
-    if (isCurrentChat) {
-      openChat(currentChatUser);
-    }
-  })
-  .subscribe();
+  if (error) {
+    console.error('❌ Failed to subscribe to realtime messages:', error);
+  } else {
+    console.log('✅ Realtime message subscription active');
+  }
+} catch (err) {
+  console.error('❌ Realtime subscription threw an error:', err);
+}
 
   getUser();
   
