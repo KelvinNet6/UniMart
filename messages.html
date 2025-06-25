@@ -360,6 +360,7 @@
 
     currentUserId = user.id;
     await loadConversations();
+    await markAllMessagesAsRead();
 
     const params = new URLSearchParams(window.location.search);
     const targetUserId = params.get('user_id');
@@ -588,6 +589,27 @@
   setInterval(updateBadgeFromStorage, 5000);
    // In messages.html
 localStorage.setItem('unreadMessages', 0);
+
+  async function markAllMessagesAsRead() {
+  if (!currentUserId) return;
+
+  // ✅ 1. Mark all received messages as read in DB
+  const { error } = await supabase
+    .from('messages')
+    .update({ is_read: true })
+    .eq('receiver_id', currentUserId)
+    .eq('is_read', false);
+
+  if (error) {
+    console.error('Error marking messages as read:', error);
+  } else {
+    // ✅ 2. Reset localStorage count
+    localStorage.setItem('unreadMessages', '0');
+
+    // ✅ 3. Trigger other tabs (like index.html) to update
+    window.dispatchEvent(new Event('storage'));
+  }
+}
   
 </script>
 </body>
