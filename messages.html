@@ -452,26 +452,26 @@
       });
   }
 
-  async function openChat(user) {
-    currentChatUser = user;
-    currentChatId = [currentUserId, user.id].sort().join('-');
-    chatUserName.textContent = user.username;
-    chatWidget.classList.remove('slide-down');
-    chatWidget.classList.add('slide-up');
-    chatWidget.style.display = 'block';
-    chatToggle.style.display = 'none';
-    chatInput.value = '';
-    chatInput.focus();
+ async function openChat(user) {
+  currentChatUser = user;
+  currentChatId = [currentUserId, user.id].sort().join('-');
+  chatUserName.textContent = user.username;
+  chatWidget.classList.remove('slide-down');
+  chatWidget.classList.add('slide-up');
+  chatWidget.style.display = 'block';
+  chatToggle.style.display = 'none';
+  chatInput.value = '';
+  chatInput.focus();
 
-    const { data: messages, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('chat_id', currentChatId)
-      .order('created_at', { ascending: true });
+  const { data: messages, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('chat_id', currentChatId)
+    .order('created_at', { ascending: true });
 
-   chatMessages.innerHTML = '';
-      if (!error && messages.length) {
-      messages.forEach(msg => {
+  chatMessages.innerHTML = '';
+  if (!error && messages.length) {
+    messages.forEach(msg => {
       const div = document.createElement('div');
       div.classList.add('message', msg.sender_id === currentUserId ? 'sent' : 'received');
       const bubble = document.createElement('div');
@@ -479,19 +479,22 @@
       bubble.textContent = msg.content;
       div.appendChild(bubble);
       chatMessages.appendChild(div);
-      });
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
-      // ✅ Mark messages as read in the database
+
+  // ✅ Mark messages in this chat as read
   await supabase
     .from('messages')
     .update({ is_read: true })
     .eq('chat_id', currentChatId)
     .eq('receiver_id', currentUserId)
     .eq('is_read', false);
-
-    localStorage.setItem('unreadMessages', 0);
+   
+  localStorage.setItem('unreadMessages', '0');
+  window.dispatchEvent(new Event('storage'));
 }
+
   async function sendMessage(content) {
     const { error } = await supabase.from('messages').insert([{
       chat_id: currentChatId,
