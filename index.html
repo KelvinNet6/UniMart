@@ -1090,6 +1090,11 @@ async function updateMessageBadge() {
     badge.style.display = 'none';
   }
 }
+   window.addEventListener('storage', (e) => {
+  if (e.key === 'unreadMessages') {
+    updateMessageBadge(); 
+  }
+});
 </script>
 </body>
 </html>
