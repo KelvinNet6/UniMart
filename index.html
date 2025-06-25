@@ -627,6 +627,7 @@
     const openTradersBtn = document.getElementById("open-traders");
     const menuPanel = document.getElementById("mobile-menu-panel");
     const tradersPanel = document.getElementById("mobile-traders-panel");
+    const badge = document.getElementById('message-badge');
 
     let allProducts = [];
     let currentUserId = null;
@@ -1016,42 +1017,20 @@ let messageChannel = null;
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       updateUI();
     });
+async function updateMessageBadge() {
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
+  if (error || !user || !badge) return;
 
-function incrementBadge() {
-  // Update localStorage
-  const currentCount = parseInt(localStorage.getItem('unreadMessages')) || 0;
-  const newCount = currentCount + 1;
-  localStorage.setItem('unreadMessages', newCount);
-
-  // Update the badge only if it exists on this page
-  const badge = document.getElementById('message-badge');
-  if (badge) {
-    badge.textContent = newCount;
-    badge.style.display = 'inline-block';
-  }
-}
-
-
-async function updateBadgeFromSupabase() {
-  const { data: { user } } = await supabaseClient.auth.getUser();
-  if (!user) return;
-
-  const userId = user.id;
-
-  const { data, error } = await supabaseClient
+  const { count, error: fetchError } = await supabaseClient
     .from('messages')
-    .select('*', { count: 'exact' })
-    .eq('receiver_id', userId)
-    .eq('is_read', false); // assuming you have this column
+    .select('*', { count: 'exact', head: true })
+    .eq('receiver_id', user.id)
+    .eq('is_read', false);
 
-  const badge = document.getElementById('message-badge');
-
-  if (error || !badge) {
-    console.error('Error fetching unread messages:', error);
+  if (fetchError) {
+    console.error('Failed to fetch unread messages:', fetchError);
     return;
   }
-
-  const count = data.length;
 
   if (count > 0) {
     badge.textContent = count;
@@ -1060,36 +1039,22 @@ async function updateBadgeFromSupabase() {
     badge.style.display = 'none';
   }
 }
+   
+function incrementBadge() {
+  const currentCount = parseInt(localStorage.getItem('unreadMessages')) || 0;
+  const newCount = currentCount + 1;
+  localStorage.setItem('unreadMessages', newCount);
+  window.dispatchEvent(new Event('storage')); // notify other tabs
+
+  if (badge) {
+    badge.textContent = newCount;
+    badge.style.display = 'inline-block';
+  }
+}
 
 document.addEventListener('DOMContentLoaded', updateBadgeFromSupabase);
 window.addEventListener('focus', updateBadgeFromSupabase);
 
-const badge = document.getElementById('message-badge');
-
-async function updateMessageBadge() {
-  const { data: { user }, error } = await supabaseClient.auth.getUser();
-  if (error || !user) return;
-
-  const { count, error: fetchError } = await supabaseClient
-    .from('messages')
-    .select('*', { count: 'exact', head: true })
-    .eq('receiver_id', user.id)
-    .eq('is_read', false);
-
-  if (fetchError || !badge) {
-    console.error('Failed to fetch unread messages:', fetchError);
-    return;
-  }
-
-  const unreadCount = count || 0;
-
-  if (unreadCount > 0) {
-    badge.textContent = unreadCount;
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
-  }
-}
    window.addEventListener('storage', (e) => {
   if (e.key === 'unreadMessages') {
     updateMessageBadge(); 
