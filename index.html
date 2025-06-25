@@ -294,21 +294,33 @@
     }
 
     .product-card .shop-button,
-    .product-card button {
-      background: #0a66c2;
-      color: white;
-      border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      margin-top: 1rem;
-      transition: background 0.3s;
-    }
+.product-card button {
+  background: #0a66c2;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
 
     .product-card button:hover,
     .product-card .shop-button:hover {
       background: #0a66c2;
     }
+
+    .product-card .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem; /* Move the spacing here */
+}
+
 
     /* Right Sidebar */
     #random-traders {
@@ -694,7 +706,7 @@ function displayProducts(products, filter = "") {
 
     images = images.map(url => url.startsWith("http") ? url : baseUrl + url);
 
-    card.innerHTML = `
+   card.innerHTML = `
   <div class="carousel">
     ${images.map((url, index) => `
       <img src="${url}" class="carousel-img" style="display: ${index === 0 ? 'block' : 'none'};">
@@ -708,19 +720,15 @@ function displayProducts(products, filter = "") {
     <h3>${p.name}</h3>
     <p>Price: ${p.price}</p>
     <p class="posted-by">Listed by ${p.user}</p>
-    
-    <a href="profile.html?user_id=${p.user_id}" class="shop-button">Visit Shop</a>
-    <a 
-      href="messages.html?user_id=${p.user_id}&user_name=${encodeURIComponent(p.user)}&product_name=${encodeURIComponent(p.name)}"
-      class="shop-button"
-    >💬 Message Trader</a>
 
-    <a 
-  href="checkout.html?product_id=${p.id}"
-  class="shop-button"
-   >🛒 Buy Now</a>
+    <div class="button-row">
+      <a href="profile.html?user_id=${p.user_id}" class="shop-button">🏬 Visit Shop</a>
+      <a href="messages.html?user_id=${p.user_id}&user_name=${encodeURIComponent(p.user)}&product_name=${encodeURIComponent(p.name)}" class="shop-button">💬 Message</a>
+      <a href="checkout.html?product_id=${p.id}" class="shop-button">🛒 Buy</a>
+    </div>
   </div>
 `;
+
 
 
     feed.appendChild(card);
