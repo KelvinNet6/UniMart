@@ -1052,8 +1052,8 @@ function incrementBadge() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', updateBadgeFromSupabase);
-window.addEventListener('focus', updateBadgeFromSupabase);
+document.addEventListener('DOMContentLoaded', updateMessageBadge);
+window.addEventListener('focus', updateMessageBadge);
 
    window.addEventListener('storage', (e) => {
   if (e.key === 'unreadMessages') {
