@@ -718,7 +718,7 @@ function displayProducts(products, filter = "") {
   </div>
   <div class="info">
     <h3>${p.name}</h3>
-    <p>Price: ${p.price}</p>
+    <p>Price: ${Number(p.price).toLocaleString('en-MW', { style: 'currency', currency: 'MWK' })}</p>
     <p class="posted-by">Listed by ${p.user}</p>
 
     <div class="button-row">
