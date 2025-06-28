@@ -7,7 +7,6 @@
   <title>Profile</title>
 </head>
 <body>
-
 <!-- Cover Photo -->
 <div class="cover-photo" id="cover-photo">
   <div class="cover-upload-wrapper">
@@ -15,7 +14,6 @@
     <input type="file" id="cover-upload" accept="image/*">
   </div>
 </div>
-
 <div class="container">
   <!-- Profile Header -->
   <div class="profile-header">
@@ -43,7 +41,6 @@
   </div>
    <br>
   <div id="product-grid" class="product-grid"></div>
-  
 </div>
 <!-- Edit Profile Modal -->
 <div id="edit-profile-modal" class="modal">
@@ -55,7 +52,6 @@
     <button onclick="saveProfile()">Save Changes</button>
   </div>
 </div>
-
 <!-- Product Modal -->
 <div id="product-modal" class="modal">
   <div class="modal-content">
@@ -66,7 +62,6 @@
     <div id="preview-images"></div>
     <select id="product-category">
   <option value="">Select Category</option>
-
   <optgroup label="Technology">
     <option value="Laptops">Laptops</option>
     <option value="Mobile Phones">Mobile Phones</option>
@@ -84,7 +79,6 @@
     <option value="Drones & Cameras">Drones & Cameras</option>
     <option value="Smart Home Devices">Smart Home Devices</option>
   </optgroup>
-
   <optgroup label="Fashion">
     <option value="Clothing">Clothing</option>
     <option value="Footwear">Footwear</option>
@@ -93,21 +87,18 @@
     <option value="Jewelry">Jewelry</option>
     <option value="Watches">Watches</option>
   </optgroup>
-
   <optgroup label="Home & Living">
     <option value="Furniture">Furniture</option>
     <option value="Home Decor">Home Decor</option>
     <option value="Kitchen Appliances">Kitchen Appliances</option>
     <option value="Lighting">Lighting</option>
   </optgroup>
-
   <optgroup label="Services">
     <option value="Repair Services">Repair Services</option>
     <option value="Tech Support">Tech Support</option>
     <option value="Delivery Services">Delivery Services</option>
     <option value="Freelance Work">Freelance Work</option>
   </optgroup>
-
   <optgroup label="Miscellaneous">
     <option value="Books & Stationery">Books & Stationery</option>
     <option value="Toys & Games">Toys & Games</option>
@@ -116,14 +107,11 @@
     <option value="Collectibles">Collectibles</option>
   </optgroup>
 </select>
-
     <textarea id="product-description" placeholder="Description" rows="3"></textarea>
     <img id="preview-image" src="#" alt="Image Preview" />
     <button onclick="addProduct()">Add Product</button>
   </div>
 </div>
-
 <script type="module" src="Sripts/profile.js"></script>
-
 </body>
 </html>
