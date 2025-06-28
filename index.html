@@ -527,29 +527,24 @@
       <a href="#" id="logout-link" style="display:none;">Sign Out</a>
     </nav>
   </header>
-
 <!-- Add this below your header for mobile controls -->
 <div id="mobile-controls" class="mobile-only">
   <button id="open-menu" style="display:none;">☰ Menu</button>
   <button id="open-traders" style="display:none;">🧑‍🤝‍🧑 Traders</button>
 </div>
-  
   <div id="nav-bar" style="display:none;">
     <a href="index.html" id="home-link">SwopFeed</a>
   </div>
-
   <div id="search-bar" style="display:none;">
     <input type="text" id="search" placeholder="Search products..." />
     <button id="search-btn">Search</button>
   </div>
-
   <!-- Login Form -->
   <div id="login-section" style="display:flex; flex-direction: column;">
     <h2>Login</h2>
     <input type="email" id="login-email" placeholder="Email" autocomplete="username" />
     <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
     <button id="login-btn">Sign In</button>
-
     <button id="google-login-btn" title="Login with Google" style="margin-top: 10px;">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533.5 544.3">
         <path fill="#4285F4" d="M533.5 278.4c0-17.5-1.6-34.3-4.7-50.6H272v95.7h146.9c-6.4 34.7-26.1 64.1-55.6 83.7v69.6h89.7c52.5-48.3 82.5-119.5 82.5-198.4z"/>
@@ -559,11 +554,9 @@
       </svg>
       Sign In with Google
     </button>
-
     <p>No account? <a href="#" id="show-register">Sign Up</a></p>
     <button id="reset-password-btn" style="margin-top:10px; background:#e07c7c; display: none;">Fogot Password?</button>
   </div>
-
   <!-- Registration Form -->
  <div id="register-section" style="display:none;">
     <h2>Sign Up</h2>
@@ -726,11 +719,7 @@ function displayProducts(products, filter = "") {
     </div>
   </div>
 `;
-
-
-
     feed.appendChild(card);
-
     // Carousel button functionality
     if (images.length > 1) {
       const imgs = card.querySelectorAll(".carousel-img");
@@ -741,7 +730,6 @@ function displayProducts(products, filter = "") {
         current = (current + 1) % imgs.length;
         imgs[current].style.display = "block";
       });
-
       card.querySelector(".prev").addEventListener("click", () => {
         imgs[current].style.display = "none";
         current = (current - 1 + imgs.length) % imgs.length;
