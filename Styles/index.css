@@ -29,8 +29,8 @@ header, #nav-bar {
     #search-bar button {
       padding: 0.5rem 1rem;
       border: 1px solid #0A1F44;
-      background: #0A1F44;
-      color: white;
+      background: #E1E6EF;
+      color: #0A1F44;
       cursor: pointer;
       border-radius: 0 5px 5px 0;
       font-weight: bold;
