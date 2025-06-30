@@ -2,8 +2,6 @@
     * { box-sizing: border-box; }
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; color: #333; }
     header { background: #0A1F44; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { margin: 0; font-size: 2rem; }
-    header p { margin-top: 5px; font-size: 1.5rem; color: white; }
     header .unimart-logo {height: 100px; width: auto; border-radius: 10px; }
     nav a { color: white; margin-left: 1rem; text-decoration: none; font-weight: bold;}
     #nav-bar { background: #0a66c2; padding: 0.5rem 2rem; }
@@ -23,8 +21,8 @@
     }
     #search-bar button {
       padding: 0.5rem 1rem;
-      border: 1px solid #0a66c2;
-      background: #0a66c2;
+      border: 1px solid #0A1F44;
+      background: #0A1F44;
       color: white;
       cursor: pointer;
       border-radius: 0 5px 5px 0;
@@ -32,14 +30,14 @@
       transition: background 0.3s;
     }
     #search-bar button:hover {
-      background: #0a66c2;
+      background: #0A1F44;
     }
 
     /* Login/Register Sections */
     #login-section, #register-section {
       max-width: 320px;
       margin: 2rem auto;
-      background: white;
+      background: #0A1F44;
       padding: 2rem;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
@@ -59,9 +57,9 @@
       outline: none;
     }
     #login-section button, #register-section button {
-      background: #0a66c2;
+      background: #E6F0FA;
       border: none;
-      color: white;
+      color: #0A1F44;
       padding: 0.75rem;
       font-weight: bold;
       border-radius: 5px;
@@ -69,7 +67,7 @@
       transition: background 0.3s;
     }
     #login-section button:hover, #register-section button:hover {
-      background: #0a66c20;
+      background: #0A1F44;
     }
     #login-section p, #register-section p {
       text-align: center;
@@ -77,7 +75,7 @@
     }
     #login-section p a, #register-section p a {
       cursor: pointer;
-      color: #0066cc;
+      color:  #0A1F44;
       text-decoration: none;
     }
     #login-section p a:hover, #register-section p a:hover {
@@ -90,9 +88,9 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      background: #0a66c2;
-      border: 1px solid #0a66c2;
-      color: #444;
+      background:  #0A1F44;
+      border: 1px solid  #0A1F44;
+      color: #E6F0FA;
       font-weight: 600;
       border-radius: 5px;
       padding: 0.5rem;
@@ -100,7 +98,7 @@
       transition: background 0.3s, box-shadow 0.3s;
     }
     #google-login-btn:hover {
-      background:#0a66c2;
+      background: #E6F0FA;
       box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
     }
     #google-login-btn svg {
@@ -114,7 +112,7 @@
   margin: 1rem auto;
   background: #d4edda;
   color: #155724;
-  border: 1px solid #0a66c2;
+  border: 1px solid #E6F0FA;
   padding: 1rem;
   border-radius: 5px;
   text-align: center;
