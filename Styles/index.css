@@ -68,11 +68,12 @@
       transition: background 0.3s;
     }
     #login-section button:hover, #register-section button:hover {
-      background: #0A1F44;
+      background: #E6F0FA;
     }
     #login-section p, #register-section p {
       text-align: center;
       font-size: 0.9rem;
+      color: #F9F9F9;
     }
     #login-section p a, #register-section p a {
       cursor: pointer;
