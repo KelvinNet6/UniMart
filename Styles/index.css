@@ -75,7 +75,7 @@
     }
     #login-section p a, #register-section p a {
       cursor: pointer;
-      color:  #0A1F44;
+      color:  #E6F0FA;
       text-decoration: none;
     }
     #login-section p a:hover, #register-section p a:hover {
