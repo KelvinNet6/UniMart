@@ -48,6 +48,7 @@
     #login-section h2, #register-section h2 {
       margin-top: 0;
       text-align: center;
+      color: #E6F0FA;
     }
     #login-section input, #register-section input {
       padding: 0.5rem;
