@@ -184,103 +184,106 @@
       background: #E6F0FA;
     }
 
-    /* Center Feed */
-    #product-feed-wrapper {
-      flex: 0 0 65%;
-      max-width: 65%;
-      overflow-y: auto;
-      background: #0A1F44;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    #product-feed {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding-bottom: 2rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-   .product-card {
-  padding: 0; /* or reduce if needed */
-  margin-bottom: 20px;
-  border-radius: 10px;
-  background: #E1E6EF;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    /* Feed wrapper using your colors */
+#product-feed-wrapper {
+  flex: 0 0 65%;
+  max-width: 65%;
+  overflow-y: auto;
+  background: #0A1F44; /* your dark blue background */
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* stronger shadow on dark bg */
+  border: 1px solid rgba(255, 255, 255, 0.15); /* subtle light border */
+  color: white; /* ensure text inside is readable */
 }
 
- .product-card img {
+/* Center content inside */
+#product-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Product card */
+.product-card {
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: #E1E6EF; /* your light card background */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  color: #0A1F44; /* dark text on light card */
+  cursor: pointer;
+}
+
+.product-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Images */
+.product-card img {
   width: 100%;
+  height: auto;
+  border-radius: 10px;
   object-fit: cover;
-  object-position: center;
-  display: block;
-  border-radius: 0;       /* Optional: set to 6px for rounded look */
+  margin-bottom: 1rem;
   box-shadow: none;
-  margin: 0;
-  padding: 0;
-  background: none;
-}
-    .product-image {
-  margin: 0;
-  padding: 0;
 }
 
-    .product-card .info {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      flex-grow: 1;
-    }
+/* Info text */
+.product-card .info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
 
-    .product-card h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.25rem;
-    }
+.product-card h3 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #0A1F44;
+}
 
-    .product-card p {
-      margin: 0.25rem 0;
-      color: #555;
-    }
+.product-card p {
+  margin: 0;
+  color: #555; /* subtle dark gray for descriptions */
+  font-size: 0.95rem;
+}
 
-    .product-card .posted-by {
-      font-size: 0.85rem;
-      color: #888;
-      margin-top: 0.5rem;
-    }
+.product-card .posted-by {
+  color: #888;
+  font-size: 0.85rem;
+}
 
+/* Buttons */
 .product-card .shop-button,
 .product-card button {
   background: #0A1F44;
   color: white;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
   font-weight: 600;
   transition: background 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
+  cursor: pointer;
+  margin-top: 1rem;
+  align-self: flex-start;
 }
 
+.product-card .shop-button:hover,
+.product-card button:hover {
+  background: #092a67; /* slightly darker blue for hover */
+}
 
-    .product-card button:hover,
-    .product-card .shop-button:hover {
-      background: #0A1F44;
-    }
-
-    .product-card .button-row {
+/* Button container */
+.product-card .button-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1rem; /* Move the spacing here */
+  margin-top: 0.5rem;
 }
-
 
     /* Right Sidebar */
     #random-traders {
