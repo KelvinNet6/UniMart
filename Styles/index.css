@@ -3,8 +3,8 @@
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #F5F7FA; color: #0A1F44; }
     header { background: #0A1F44; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
     header .unimart-logo {height: 100px; width: auto; border-radius: 10px; }
-    nav a { color: white; margin-left: 1rem; text-decoration: none; font-weight: bold;}
-    #nav-bar { background: #0a66c2; padding: 0.5rem 2rem; }
+    nav a { color: #F5F7FA; margin-left: 1rem; text-decoration: none; font-weight: bold;}
+    #nav-bar { background: #0A1F44; padding: 0.5rem 2rem; }
     #nav-bar a {color: white; text-decoration: none; font-weight: 600; margin-left: 1rem; }
     #search-bar {
       display: flex;
@@ -253,9 +253,9 @@
       margin-top: 0.5rem;
     }
 
-    .product-card .shop-button,
+.product-card .shop-button,
 .product-card button {
-  background: #0a66c2;
+  background: #0A1F44;
   color: white;
   border: none;
   padding: 0.6rem 1rem;
@@ -271,7 +271,7 @@
 
     .product-card button:hover,
     .product-card .shop-button:hover {
-      background: #0a66c2;
+      background: #0A1F44;
     }
 
     .product-card .button-row {
@@ -300,12 +300,12 @@
       padding: 10px;
       margin-bottom: 10px;
       border-radius: 8px;
-      background: #F5F7FA;
+      background: #0A1F44;
     }
 
     .trader-card h4 {
       margin: 0 0 5px;
-      color: #0a66c2;
+      color: #E6F0FA;
     }
 
     .trader-card p {
@@ -314,7 +314,8 @@
     }
 
     .trader-card small {
-      color: #F5F7FA;
+      color: #0A1F44;
+      border-color: #E6F0FA 
     }
 
     @media (max-width: 600px) {
