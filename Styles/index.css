@@ -289,13 +289,15 @@
       padding: 1rem;
       border-radius: 8px;
       background: #0A1F44;
-      color: #E6F0FA;
+      
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
       height: fit-content;
       position: sticky;
       top: 40px;
     }
-
+    #random-traders h2{
+      color: #E6F0FA;
+    }
     .trader-card {
       border: 1px solid #ccc;
       padding: 10px;
@@ -316,7 +318,7 @@
 
     .trader-card small {
       color: #0A1F44;
-      border-color: #E6F0FA 
+      border-color: #E6F0FA;
     }
 
     @media (max-width: 600px) {
