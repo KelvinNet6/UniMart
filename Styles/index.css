@@ -1,10 +1,17 @@
   /* Basic Reset */
     * { box-sizing: border-box; }
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #E1E6EF; color: #0A1F44; }
-    header { background: #0A1F44; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+header, #nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+}
+    header { background: #0A1F44; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;  height: 100px; padding: 1rem 2rem; }
     header .unimart-logo {height: 100px; width: auto; border-radius: 10px; }
     nav a { color: #F5F7FA; margin-left: 1rem; text-decoration: none; font-weight: bold;}
-    #nav-bar { background: #0A1F44; padding: 0.5rem 2rem; }
+    #nav-bar { background: #0A1F44; padding: 0.5rem 2rem; top: 100px; height: 40px; }
     #nav-bar a {color: white; text-decoration: none; font-weight: 600; margin-left: 1rem; }
     #search-bar {
       display: flex;
@@ -110,16 +117,7 @@
 
 /* Welcome message */
 #welcome-message {
-  max-width: 320px;
-  margin: 1rem auto;
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #E6F0FA;
-  padding: 1rem;
-  border-radius: 5px;
-  text-align: center;
-  font-weight: bold;
-  animation: fadeOut 1s forwards; /* Add fade-out animation */
+  display: none !important;
 }
 
 /* Fade-out animation */
@@ -132,27 +130,32 @@
   }
 }
 
- #main-wrapper {
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-      padding: 40px 20px 20px;
-      height: calc(100vh - 40px);
-      box-sizing: border-box;
-    }
+#main-wrapper {
+  display: block; /* or remove flex */
+  padding-top: 140px; /* to avoid being hidden behind fixed header/nav */
+  margin-left: 10%; /* leave space for left sidebar */
+  margin-right: 20%; /* leave space for right sidebar */
+  height: auto;
+  overflow: visible;
+}
 
     /* Left Sidebar */
     #left-sidebar {
-      flex: 0 0 10%;
-      max-width: 10%;
-      border-radius: 8px;
-      padding: 1rem;
-      background: #0A1F44;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-      height: fit-content;
-      position: sticky;
-      top: 40px;
-    }
+  position: fixed;
+  top: 140px; /* header(100) + nav(40) */
+  left: 0;
+  height: calc(100vh - 140px);
+  width: 10%;
+  max-width: 10%;
+  overflow-y: auto; /* allow scrolling if content overflows */
+  box-sizing: border-box;
+  padding: 1rem;
+  border-radius: 0 0 8px 8px; /* round bottom corners only */
+  background: #0A1F44;
+  color: #E6F0FA;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  z-index: 9999;
+}
 
     #left-sidebar h3 {
       margin-top: 0;
@@ -186,25 +189,34 @@
 
     /* Feed wrapper using your colors */
 #product-feed-wrapper {
-  flex: 0 0 65%;
-  max-width: 65%;
-  overflow-y: auto;
-  background: #E1E6EF; /* your dark blue background */
+  position: fixed;
+  top: 140px; /* below header + nav */
+  left: 10%; /* next to left sidebar */
+  right: 20%; /* before right sidebar */
+  height: calc(100vh - 140px);
+  overflow: hidden; /* hide scrollbar on wrapper */
+  background: #E1E6EF;
   border-radius: 16px;
   padding: 1.5rem 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* stronger shadow on dark bg */
-  border: 1px solid rgba(255, 255, 255, 0.15); /* subtle light border */
-  color: white; /* ensure text inside is readable */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #0A1F44;
+  z-index: 9998;
+  display: flex;
+  justify-content: center;
 }
 
 /* Center content inside */
 #product-feed {
+  overflow-y: auto;
+  height: 100%;
+  max-width: 600px;
+  width: 100%;
+  padding-bottom: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding-bottom: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 /* Product card */
@@ -287,17 +299,20 @@
 
     /* Right Sidebar */
     #random-traders {
-      flex: 0 0 20%;
-      max-width: 20%;
-      padding: 1rem;
-      border-radius: 8px;
-      background: #0A1F44;
-      color: #E6F0FA;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
-      height: fit-content;
-      position: sticky;
-      top: 40px;
-    }
+  position: fixed;
+  top: 140px; /* same as left sidebar */
+  right: 0;
+  height: calc(100vh - 140px);
+  width: 20%;
+  max-width: 20%;
+  overflow-y: auto; /* scroll if needed */
+  padding: 1rem;
+  border-radius: 0 0 8px 8px;
+  background: #0A1F44;
+  color: #E6F0FA;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  z-index: 9999;
+}
     .trader-card {
       border: 1px solid #ccc;
       padding: 10px;
