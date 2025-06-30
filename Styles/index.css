@@ -208,7 +208,7 @@
   padding: 0; /* or reduce if needed */
   margin-bottom: 20px;
   border-radius: 10px;
-  background: white;
+  background: #E1E6EF;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
