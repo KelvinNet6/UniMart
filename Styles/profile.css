@@ -215,7 +215,7 @@ body {
       display: none !important;
    }
 
-    .carousel {
+.carousel {
   position: relative;
   width: 100%;
   max-height: 200px;
