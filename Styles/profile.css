@@ -1,7 +1,7 @@
 body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f9f9f9;
+      background: #E1E6EF;
     }
 
     .cover-photo {
@@ -67,7 +67,7 @@ body {
     }
 
     .edit-btn {
-      background: #000000;
+      background: #E1E6EF;
       color: white;
       border: none;
       padding: 10px 16px;
@@ -77,7 +77,7 @@ body {
     }
 
     .edit-btn:hover {
-      background: #333333;
+      background: #E1E6EF;
     }
 
     .message-icon-wrapper {
@@ -85,7 +85,7 @@ body {
     }
 
     .message-icon {
-      background: #000000;
+      background: #E1E6EF;
       color: white;
       border: none;
       padding: 10px 14px;
@@ -160,7 +160,7 @@ body {
     }
 
     .modal-content button {
-      background: #000000;
+      background: #E1E6EF;
       color: white;
       padding: 10px;
       border: none;
@@ -170,7 +170,7 @@ body {
     }
 
     .modal-content button:hover {
-      background: #333333;
+      background: #E1E6EF;
     }
 
     #preview-image {
