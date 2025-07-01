@@ -22,7 +22,7 @@ body {
 
     .cover-upload-wrapper label {
       background: rgba(0, 0, 0, 0.8);
-      color: white;
+      color: #E1E6EF;
       padding: 8px 12px;
       border-radius: 8px;
       cursor: pointer;
@@ -50,6 +50,7 @@ body {
       margin-top: 2px;
       position: relative;
       z-index: 1;
+      color: #E1E6EF;
     }
 
     #profile-image {
@@ -113,7 +114,7 @@ body {
     }
 
     .product-card {
-      background: white;
+      background: #0A1F44;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       padding: 10px;
@@ -121,6 +122,7 @@ body {
       flex-direction: column;
       align-items: center;
       text-align: center;
+      color: #E1E6EF;
     }
 
     .product-card img {
@@ -142,11 +144,12 @@ body {
     }
 
     .modal-content {
-      background: white;
+      background: #0A1F44;
       padding: 20px;
       border-radius: 12px;
       max-width: 400px;
       width: 90%;
+      color: 
     }
 
     .modal-content input,
@@ -156,12 +159,12 @@ body {
       padding: 8px;
       margin: 8px 0;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      border: 1px solid #E1E6EF;
     }
 
     .modal-content button {
       background: #E1E6EF;
-      color: white;
+      color: #0A1F44;
       padding: 10px;
       border: none;
       border-radius: 8px;
@@ -227,8 +230,8 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,0.4);
-  color: white;
+  background: #E1E6EF;
+  color: #0A1F44;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
