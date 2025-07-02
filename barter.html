@@ -155,6 +155,59 @@
     .barter-card button:hover {
       background: #0C2A5F;
     }
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      header .unimart-logo {
+        height: 70px;
+        margin-bottom: 0.5rem;
+      }
+      nav a {
+        margin-left: 0;
+        margin-right: 1rem;
+        display: inline-block;
+      }
+      #search-bar {
+        width: 100%;
+        margin: 0.5rem 0 1rem;
+      }
+      #search-bar input[type="text"] {
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+      }
+      #search-bar button {
+        width: 100%;
+        border-radius: 0 0 5px 5px;
+        margin-top: 0.25rem;
+      }
+      main {
+        padding: 0 1rem;
+      }
+      .barter-listings {
+        grid-template-columns: 1fr; /* single column */
+      }
+      .barter-card img {
+        height: 150px;
+      }
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 1rem;
+      }
+      .modal-content input[type="text"],
+      .modal-content textarea,
+      .modal-content input[type="file"] {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+      .modal-content button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -172,18 +225,8 @@
       <a href="#" id="logout-link">Sign Out</a>
     </nav>
   </header>
-
   <main>
-    <section class="barter-form">
-      <h2>Upload a Barter Item</h2>
-      <form>
-        <input type="text" placeholder="Item Name" required>
-        <textarea placeholder="Item Description" rows="4" required></textarea>
-        <input type="text" placeholder="What do you want in exchange?" required>
-        <input type="file" accept="image/*" required>
-        <button type="submit">List Item for Barter</button>
-      </form>
-    </section>
+    <button id="openModalBtn">Upload Barter Item</button>
 
     <section class="barter-listings">
       <div class="barter-card">
@@ -199,9 +242,41 @@
         <p>Looking to trade for DJ equipment.</p>
         <button>Propose Trade</button>
       </div>
-
-      <!-- Add more barter cards here -->
     </section>
   </main>
+
+  <div id="uploadModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Upload a Barter Item</h2>
+      <form>
+        <input type="text" placeholder="Item Name" required>
+        <textarea placeholder="Item Description" rows="4" required></textarea>
+        <input type="text" placeholder="What do you want in exchange?" required>
+        <input type="file" accept="image/*" required>
+        <button type="submit">List Item for Barter</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('uploadModal');
+    const btn = document.getElementById('openModalBtn');
+    const span = document.querySelector('.close');
+
+    btn.onclick = () => {
+      modal.style.display = 'block';
+    };
+
+    span.onclick = () => {
+      modal.style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
 </body>
 </html>
