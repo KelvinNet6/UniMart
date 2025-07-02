@@ -7,17 +7,22 @@
   <title>SwopChat</title>
 </head>
 <body>
-<header>
-   <a href="index.html" style="text-decoration: none; color: inherit;"><h1>🤝 Swopit</h1></a>
+  <header>
+  <a href="index.html" style="text-decoration: none; color: inherit;">
+   <img src="UniMart.png" alt="UniMart Logo" class="unimart-logo">
+  </a>
+     <div id="search-bar" style="display:none;">
+    <input type="text" id="search" placeholder="Search products..." />
+    <button id="search-btn">Search</button>
+  </div>
   <nav>
-    <a href="#profile.html" id="profile-link" style="display:none;">Profile</a>
+    <a href="profile.html" id="profile-link" style="display:none;">My Listings</a>
+    <a href="#" id="logout-link" style="display:none;">Sign Out</a>
   </nav>
-</header>
-<div id="nav-bar">
-  <a href="index.html" id="home-link">SwopFeed</a>
-</div>
+  </header>
+  
 <div class="messages-container">
-  <h2>SwopChat</h2>
+  <h2>UniMart Convos</h2>
   <div id="messages-list"></div>
 </div>
 <!-- Chat Toggle Button -->
